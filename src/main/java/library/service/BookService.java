@@ -31,14 +31,10 @@ public class BookService {
     public Book findById(Long id) {
         Optional<Book> bookDb = bookRepository.findById(id);
         if (bookDb.isPresent()) {
-            Book book = bookDb.get();
-            if (book.getId() != null) {
-                return bookRepository.findById(id).get();
-            } else {
-                throw new EntityNotFoundException("Record not found with id : " + book.getId());
-            }
+            return bookDb.get();
+        } else {
+            throw new EntityNotFoundException("Record not found with id ");
         }
-        return null;
     }
 
     public void deleteById(Long id) {
@@ -48,19 +44,16 @@ public class BookService {
     public Book updateBook(Book book) {
         Optional<Book> bookDb = this.bookRepository.findById(book.getId());
         if (bookDb.isPresent()) {
-            if (book.getId() != null) {
-                Book bookUpdate = bookDb.get();
-                bookUpdate.setId(book.getId());
-                bookUpdate.setBookName(book.getBookName());
-                bookUpdate.setNumberOfPages(book.getNumberOfPages());
-                bookUpdate.setPublicationYear(book.getPublicationYear());
-                bookUpdate.setAuthor(book.getAuthor());
-                bookRepository.save(bookUpdate);
-                return bookUpdate;
-            } else {
-                throw new EntityNotFoundException("Record not found with id : " + book.getId());
-            }
+            Book bookUpdate = bookDb.get();
+            bookUpdate.setId(book.getId());
+            bookUpdate.setBookName(book.getBookName());
+            bookUpdate.setNumberOfPages(book.getNumberOfPages());
+            bookUpdate.setPublicationYear(book.getPublicationYear());
+            bookUpdate.setAuthor(book.getAuthor());
+            bookRepository.save(bookUpdate);
+            return bookUpdate;
+        } else {
+            throw new EntityNotFoundException("Record not found with id : " + book.getId());
         }
-        return book;
     }
 }

@@ -34,32 +34,25 @@ public class AuthorService {
 
     public Author findById(Long id) {
         Optional<Author> authorDb = authorRepository.findById(id);
-        if (authorDb.isPresent()) {
-            Author author = authorDb.get();
-            if (author.getId() != null) {
-                return authorRepository.findById(id).get();
-            } else {
-                throw new EntityNotFoundException("Record not found with id : " + author.getId());
-            }
+        Author author = authorDb.get();
+        if (author.getId() != null) {
+            return authorRepository.findById(id).get();
+        } else {
+            throw new EntityNotFoundException("Record not found with id! ");
         }
-        return null;
     }
 
 
     public Set<Book> findAuthorBooks(Long id) {
         Optional<Author> authorDb = authorRepository.findById(id);
-        if (authorDb.isPresent()) {
-            Author author = authorDb.get();
-            if (author.getBooks() != null) {
-                return author.getBooks();
-            } else {
-                throw new NullBooksException("У автора нет книг");
-
-            }
+        Author author = authorDb.get();
+        if (author.getBooks() != null) {
+            return author.getBooks();
+        } else {
+            throw new NullBooksException("Author has not books!");
 
         }
 
-        return null;
     }
 
     public void authorDelete(Long id) {
@@ -67,7 +60,7 @@ public class AuthorService {
         if (authorDb.isPresent()) {
             Author author = authorDb.get();
             if (author.getBooks() != null) {
-                throw new AuthorDeleteException("Автор не может быть удален, т.к. у него имеются книги!");
+                throw new AuthorDeleteException("Deleting is not possible. The author has a book!");
             } else {
                 authorRepository.deleteById(id);
             }
@@ -77,19 +70,17 @@ public class AuthorService {
     public Author updateAuthor(Author author) {
         Optional<Author> authorDb = authorRepository.findById(author.getId());
         if (authorDb.isPresent()) {
-            if (author.getId() != null) {
-                Author authorUpdate = authorDb.get();
-                authorUpdate.setId(author.getId());
-                authorUpdate.setFullName(author.getFullName());
-                authorUpdate.setNationality(author.getNationality());
-                authorUpdate.setDateOfBirth(author.getDateOfBirth());
-                authorRepository.save(authorUpdate);
-                return authorUpdate;
-            }
-            throw new EntityNotFoundException("Record not found with id : " + author.getId());
-
+            Author authorUpdate = authorDb.get();
+            authorUpdate.setId(author.getId());
+            authorUpdate.setFullName(author.getFullName());
+            authorUpdate.setNationality(author.getNationality());
+            authorUpdate.setDateOfBirth(author.getDateOfBirth());
+            authorRepository.save(authorUpdate);
+            return authorUpdate;
         }
-        return author;
+        throw new EntityNotFoundException("Record not found with id " );
+
     }
 }
+
 

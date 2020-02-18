@@ -49,7 +49,7 @@ class AuthorController {
         return authorService.updateAuthor(author);
     }
 
-    @PostMapping("/delete(id)")
+    @GetMapping("/delete(id)")
     public void delete(Long id) {
         authorService.authorDelete(id);
     }

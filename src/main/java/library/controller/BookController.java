@@ -6,10 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/book")
@@ -40,7 +37,7 @@ public class BookController {
         return bookService.updateBook(book);
     }
 
-    @PostMapping("/delete(id)")
+    @DeleteMapping("/delete(id)")
     public void delete(Long id) {
         bookService.deleteById(id);
     }

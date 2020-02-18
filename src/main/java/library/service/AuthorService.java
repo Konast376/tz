@@ -1,15 +1,18 @@
 package library.service;
 
-import library.Exception.ResourceNotFoundException;
 import library.entity.Author;
 import library.entity.Book;
+import library.exception.AuthorDeleteException;
+import library.exception.EntityNotFoundException;
+import library.exception.NullBooksException;
+import library.repository.AuthorRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import library.repository.AuthorRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -19,36 +22,74 @@ public class AuthorService {
     public AuthorService(AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
     }
+
+
     public void create(Author author) {
         authorRepository.save(author);
     }
-    public Author get(Long id) {
-        return authorRepository.findById(id).get();
+
+    public Page<Author> findAll(Pageable pageable) {
+        return authorRepository.findAll(pageable);
     }
-    public List<Author> findAll(Pageable pageable) {
-        return (List<Author>) authorRepository.findAll(pageable);
-    }
+
     public Author findById(Long id) {
-        return authorRepository.findById(id).get();
-    }
-    public void delete(Long id) {
-        authorRepository.deleteById(id);
-    }
-    public void deleteById(Long id) {
-        authorRepository.deleteById(id);
-    }
-    public Author updateAuthor(Author author) {
-        Optional< Author > authorDb = this.authorRepository.findById(author.getId());
+        Optional<Author> authorDb = authorRepository.findById(id);
         if (authorDb.isPresent()) {
-            Author authorUpdate = authorDb.get();
-            authorUpdate.setId(author.getId());
-            authorUpdate.setFullName(author.getFullName());
-            authorUpdate.setNationality(author.getNationality());
-            authorUpdate.setDateOfBirth(author.getDateOfBirth());
-            authorRepository.save(authorUpdate);
-            return authorUpdate;
-        } else {
-            throw new ResourceNotFoundException("Record not found with id : " + author.getId());
+            Author author = authorDb.get();
+            if (author.getId() != null) {
+                return authorRepository.findById(id).get();
+            } else {
+                throw new EntityNotFoundException("Record not found with id : " + author.getId());
+            }
         }
+        return null;
+    }
+
+
+    public Set<Book> findAuthorBooks(Long id) {
+        Optional<Author> authorDb = authorRepository.findById(id);
+        if (authorDb.isPresent()) {
+            Author author = authorDb.get();
+            if (author.getBooks() != null) {
+                return author.getBooks();
+            } else {
+                throw new NullBooksException("У автора нет книг");
+
+            }
+
+        }
+
+        return null;
+    }
+
+    public void authorDelete(Long id) {
+        Optional<Author> authorDb = authorRepository.findById(id);
+        if (authorDb.isPresent()) {
+            Author author = authorDb.get();
+            if (author.getBooks() != null) {
+                throw new AuthorDeleteException("Автор не может быть удален, т.к. у него имеются книги!");
+            } else {
+                authorRepository.deleteById(id);
+            }
+        }
+    }
+
+    public Author updateAuthor(Author author) {
+        Optional<Author> authorDb = authorRepository.findById(author.getId());
+        if (authorDb.isPresent()) {
+            if (author.getId() != null) {
+                Author authorUpdate = authorDb.get();
+                authorUpdate.setId(author.getId());
+                authorUpdate.setFullName(author.getFullName());
+                authorUpdate.setNationality(author.getNationality());
+                authorUpdate.setDateOfBirth(author.getDateOfBirth());
+                authorRepository.save(authorUpdate);
+                return authorUpdate;
+            }
+            throw new EntityNotFoundException("Record not found with id : " + author.getId());
+
+        }
+        return author;
+    }
 }
-}
+

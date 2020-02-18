@@ -3,9 +3,10 @@ package library.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,8 +21,6 @@ public class Author {
     private Date dateOfBirth;
     private String nationality;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "author")
-    private List<Book> books;
-
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "author")
+    private Set<Book> books;
 }
-

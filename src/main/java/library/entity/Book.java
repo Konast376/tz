@@ -6,13 +6,12 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "books")
+@Table(name = "Books")
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +19,9 @@ public class Book {
     private String bookName;
     private int numberOfPages;
     private Date publicationYear;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
-    private Set<Author> author;
+    private Author author;
 }
 
 

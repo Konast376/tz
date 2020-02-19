@@ -20,8 +20,8 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public void create(Book Book) {
-        bookRepository.save(Book);
+    public void create(Book book) {
+        bookRepository.save(book);
     }
 
     public Page<Book> listAll(Pageable pageable) {
@@ -33,7 +33,7 @@ public class BookService {
         if (bookDb.isPresent()) {
             return bookDb.get();
         } else {
-            throw new EntityNotFoundException("Record not found with id ");
+            throw new EntityNotFoundException("Record not found with id! ");
         }
     }
 
@@ -42,7 +42,7 @@ public class BookService {
     }
 
     public Book updateBook(Book book) {
-        Optional<Book> bookDb = this.bookRepository.findById(book.getId());
+        Optional<Book> bookDb = bookRepository.findById(book.getId());
         if (bookDb.isPresent()) {
             Book bookUpdate = bookDb.get();
             bookUpdate.setId(book.getId());
@@ -53,7 +53,7 @@ public class BookService {
             bookRepository.save(bookUpdate);
             return bookUpdate;
         } else {
-            throw new EntityNotFoundException("Record not found with id : " + book.getId());
+            throw new EntityNotFoundException("Record not found with id! ");
         }
     }
 }

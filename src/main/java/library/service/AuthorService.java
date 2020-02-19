@@ -34,9 +34,8 @@ public class AuthorService {
 
     public Author findById(Long id) {
         Optional<Author> authorDb = authorRepository.findById(id);
-        Author author = authorDb.get();
-        if (author.getId() != null) {
-            return authorRepository.findById(id).get();
+        if (authorDb.isPresent()) {
+            return authorDb.get();
         } else {
             throw new EntityNotFoundException("Record not found with id! ");
         }
@@ -44,13 +43,11 @@ public class AuthorService {
 
 
     public Set<Book> findAuthorBooks(Long id) {
-        Optional<Author> authorDb = authorRepository.findById(id);
-        Author author = authorDb.get();
+        Author author = findById(id);
         if (author.getBooks() != null) {
             return author.getBooks();
         } else {
             throw new NullBooksException("Author has not books!");
-
         }
 
     }
@@ -78,7 +75,7 @@ public class AuthorService {
             authorRepository.save(authorUpdate);
             return authorUpdate;
         }
-        throw new EntityNotFoundException("Record not found with id " );
+        throw new EntityNotFoundException("Record not found with id!");
 
     }
 }

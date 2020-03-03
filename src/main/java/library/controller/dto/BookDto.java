@@ -1,16 +1,15 @@
-package library.service;
+package library.controller.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import library.entity.Author;
+import lombok.Data;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 public class BookDto {
     private Long id;
     private String bookName;
     private int numberOfPages;
     private Date publicationYear;
-    private Long authorId;
+    private Author authorId;
 }

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-@Transactional
+
 public class BookService {
 
     private final BookRepository bookRepository;
@@ -20,40 +20,36 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public void create(Book book) {
-        bookRepository.save(book);
+    @Transactional
+    public Book createBook(Book book) {
+        return bookRepository.save(book);
     }
 
+    @Transactional
     public Page<Book> listAll(Pageable pageable) {
         return bookRepository.findAll(pageable);
     }
 
+    @Transactional
     public Book findById(Long id) {
         Optional<Book> bookDb = bookRepository.findById(id);
-        if (bookDb.isPresent()) {
-            return bookDb.get();
-        } else {
-            throw new EntityNotFoundException("Record not found with id! ");
-        }
+        return bookDb.orElseThrow(() -> new EntityNotFoundException("Record not found with id! "));
     }
 
+    @Transactional
     public void deleteById(Long id) {
         bookRepository.deleteById(id);
     }
 
+    @Transactional
     public Book updateBook(Book book) {
-        Optional<Book> bookDb = bookRepository.findById(book.getId());
-        if (bookDb.isPresent()) {
-            Book bookUpdate = bookDb.get();
-            bookUpdate.setId(book.getId());
-            bookUpdate.setBookName(book.getBookName());
-            bookUpdate.setNumberOfPages(book.getNumberOfPages());
-            bookUpdate.setPublicationYear(book.getPublicationYear());
-            bookUpdate.setAuthor(book.getAuthor());
-            bookRepository.save(bookUpdate);
-            return bookUpdate;
-        } else {
-            throw new EntityNotFoundException("Record not found with id! ");
-        }
+        Book bookDb = findById(book.getId());
+        bookDb.setId(book.getId());
+        bookDb.setBookName(book.getBookName());
+        bookDb.setNumberOfPages(book.getNumberOfPages());
+        bookDb.setPublicationYear(book.getPublicationYear());
+        bookDb.setAuthor(book.getAuthor());
+        return bookRepository.save(bookDb);
+
     }
 }

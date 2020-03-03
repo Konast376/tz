@@ -1,24 +1,26 @@
 package library.entity;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name = "authors")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, unique = true)
     private Long id;
+    @Column(nullable = false)
     private String fullName;
+    @Column(nullable = false)
     private Date dateOfBirth;
+    @Column
     private String nationality;
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "author")

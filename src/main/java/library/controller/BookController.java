@@ -1,14 +1,17 @@
 package library.controller;
 
+import library.entity.Author;
 import library.entity.Book;
 import library.service.AuthorService;
-import library.service.BookDto;
+import library.controller.dto.BookDto;
 import library.service.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/book")
@@ -23,14 +26,14 @@ public class BookController {
 
 
     @PostMapping("/create")
-    public void create(@RequestBody BookDto bookDto) {
+    public Book create(@RequestBody BookDto bookDto) {
         Book book = new Book();
         book.setId(bookDto.getId());
         book.setBookName(bookDto.getBookName());
         book.setNumberOfPages(bookDto.getNumberOfPages());
         book.setPublicationYear(bookDto.getPublicationYear());
         book.setAuthor(authorService.findById(bookDto.getAuthorId()));
-        bookService.create(book);
+        return bookService.createBook(book);
     }
 
     @GetMapping("/list")
@@ -42,6 +45,14 @@ public class BookController {
     public Book get(@RequestParam Long id) {
         return bookService.findById(id);
     }
+
+    @GetMapping("/authorBooks")
+    public Set<Book> findAuthorBooks(@RequestParam Long id) {
+        Author author = authorService.findById(id);
+        return author.getBooks();
+
+    }
+
 
     @GetMapping("/update")
     public Book updateBook(@RequestBody BookDto bookDto) {

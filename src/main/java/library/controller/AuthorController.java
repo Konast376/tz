@@ -1,5 +1,7 @@
 package library.controller;
 
+import library.controller.dto.AuthorDto;
+import library.controller.mapper.AuthorMapper;
 import library.entity.Author;
 import library.entity.Book;
 import library.service.AuthorService;
@@ -16,34 +18,37 @@ import java.util.Set;
 @RequestMapping("/api/author")
 class AuthorController {
     private final AuthorService authorService;
+    private final AuthorMapper authorMapper;
+    //AuthorDto toDto(Author author);
 
-    public AuthorController(AuthorService authorService) {
+    public AuthorController(AuthorService authorService, AuthorMapper authorMapper) {
         this.authorService = authorService;
+        this.authorMapper=authorMapper;
     }
 
     @PostMapping("/create")
-    public void create(@RequestBody Author author) {
-        authorService.create(author);
+    public AuthorDto create(@RequestBody AuthorDto authorDto) {
+       Author author = authorMapper.authorDtoToAuthor(authorDto);
+        return authorMapper.authorToAuthorDto(authorService.createAuthor(author));
     }
 
     @GetMapping("/list")
-    public Page<Author> getAllAuthors(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        return authorService.findAll(pageable);
+    public Page<AuthorDto> getAllAuthors(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+       authorMapper.authorDtoToAuthor();
+        return authorMapper.authorToAuthorDto(authorService.findAll(pageable);
     }
 
     @GetMapping("/get")
-    public Author get(@RequestParam Long id) {
+    public AuthorDto get(@RequestParam Long id) {
+
         return authorService.findById(id);
     }
 
-    @GetMapping("/authorBooks")
-    public Set<Book> findAuthorBooks(@RequestParam Long id) {
-        return authorService.findAuthorBooks(id);
-    }
 
     @GetMapping("/update")
-    public Author updateAuthor(@RequestBody Author author) {
-        return authorService.updateAuthor(author);
+    public AuthorDto updateAuthor(@RequestBody AuthorDto authorDto) {
+        Author author = authorMapper.authorDtoToAuthor(authorDto);
+        return authorMapper.authorToAuthorDto(authorService.updateAuthor(author));
     }
 
     @PostMapping("/delete")

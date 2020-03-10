@@ -1,9 +1,10 @@
 package library.controller;
 
+import library.controller.dto.BookDto;
+import library.controller.mapper.BookMapper;
 import library.entity.Author;
 import library.entity.Book;
 import library.service.AuthorService;
-import library.controller.dto.BookDto;
 import library.service.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -18,51 +22,51 @@ import java.util.Set;
 public class BookController {
     private final BookService bookService;
     private final AuthorService authorService;
+    private final BookMapper bookMapper;
 
-    public BookController(BookService bookService, AuthorService authorService) {
+    public BookController(BookService bookService, AuthorService authorService, BookMapper bookMapper) {
         this.bookService = bookService;
         this.authorService = authorService;
+        this.bookMapper = bookMapper;
     }
 
 
     @PostMapping("/create")
-    public Book create(@RequestBody BookDto bookDto) {
-        Book book = new Book();
-        book.setId(bookDto.getId());
-        book.setBookName(bookDto.getBookName());
-        book.setNumberOfPages(bookDto.getNumberOfPages());
-        book.setPublicationYear(bookDto.getPublicationYear());
-        book.setAuthor(authorService.findById(bookDto.getAuthorId()));
-        return bookService.createBook(book);
+    public BookDto create(@RequestBody BookDto bookDto) {
+        Book book = bookMapper.bookDtoToBook(bookDto);
+        return bookMapper.bookToBookDto(bookService.createBook(book));
     }
 
     @GetMapping("/list")
-    public Page<Book> listAll(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        return bookService.listAll(pageable);
+    public List<BookDto> listAll(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<Book> books = bookService.listAll(pageable);
+        List<BookDto> result = new ArrayList<>();
+        for (Book book : books.getContent()) {
+            result.add(bookMapper.bookToBookDto(book));
+        }
+        return result;
     }
 
     @GetMapping("/get")
-    public Book get(@RequestParam Long id) {
-        return bookService.findById(id);
+    public BookDto get(@RequestParam Long id) {
+        return bookMapper.bookToBookDto(bookService.findById(id));
     }
 
     @GetMapping("/authorBooks")
-    public Set<Book> findAuthorBooks(@RequestParam Long id) {
+    public Set<BookDto> findAuthorBooks(@RequestParam Long id) {
         Author author = authorService.findById(id);
-        return author.getBooks();
-
+        Set<BookDto> result = new HashSet<>();
+        for (Book book : author.getBooks()) {
+           result.add(bookMapper.bookToBookDto(book));
+        }
+        return result;
     }
 
 
     @GetMapping("/update")
-    public Book updateBook(@RequestBody BookDto bookDto) {
-        Book book = new Book();
-        book.setId(bookDto.getId());
-        book.setBookName(bookDto.getBookName());
-        book.setNumberOfPages(bookDto.getNumberOfPages());
-        book.setPublicationYear(bookDto.getPublicationYear());
-        book.setAuthor(authorService.findById(bookDto.getAuthorId()));
-        return bookService.updateBook(book);
+    public BookDto updateBook(@RequestBody BookDto bookDto) {
+        Book book = bookMapper.bookDtoToBook(bookDto);
+        return bookMapper.bookToBookDto(bookService.updateBook(book));
     }
 
     @PostMapping("/delete")

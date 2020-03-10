@@ -1,6 +1,5 @@
 package library.controller.dto;
 
-import library.entity.Author;
 import lombok.Data;
 
 import java.util.Date;
@@ -11,5 +10,5 @@ public class BookDto {
     private String bookName;
     private int numberOfPages;
     private Date publicationYear;
-    private Author authorId;
+    private Long authorId;
 }

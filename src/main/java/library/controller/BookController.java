@@ -30,7 +30,6 @@ public class BookController {
         this.bookMapper = bookMapper;
     }
 
-
     @PostMapping("/create")
     public BookDto create(@RequestBody BookDto bookDto) {
         Book book = bookMapper.bookDtoToBook(bookDto);
@@ -57,11 +56,10 @@ public class BookController {
         Author author = authorService.findById(id);
         Set<BookDto> result = new HashSet<>();
         for (Book book : author.getBooks()) {
-           result.add(bookMapper.bookToBookDto(book));
+            result.add(bookMapper.bookToBookDto(book));
         }
         return result;
     }
-
 
     @GetMapping("/update")
     public BookDto updateBook(@RequestBody BookDto bookDto) {
@@ -74,4 +72,3 @@ public class BookController {
         bookService.deleteById(id);
     }
 }
-

@@ -46,7 +46,6 @@ class AuthorController {
         return authorMapper.authorToAuthorDto(authorService.findById(id));
     }
 
-
     @GetMapping("/update")
     public AuthorDto updateAuthor(@RequestBody AuthorDto authorDto) {
         Author author = authorMapper.authorDtoToAuthor(authorDto);
@@ -58,5 +57,3 @@ class AuthorController {
         authorService.authorDelete(id);
     }
 }
-
-

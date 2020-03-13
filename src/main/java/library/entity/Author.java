@@ -22,7 +22,6 @@ public class Author {
     private Date dateOfBirth;
     @Column
     private String nationality;
-
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "author")
     private Set<Book> books;
 }

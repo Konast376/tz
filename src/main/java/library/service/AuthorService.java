@@ -1,8 +1,6 @@
 package library.service;
 
 import library.entity.Author;
-import library.entity.Book;
-import library.exception.AuthorDeleteException;
 import library.exception.EntityNotFoundException;
 import library.repository.AuthorRepository;
 import org.springframework.data.domain.Page;
@@ -38,19 +36,22 @@ public class AuthorService {
     }
 
     @Transactional
-    public void authorDelete(Long id) {
-        authorRepository.deleteById(id);
-    }
-
-    @Transactional
     public Author updateAuthor(Author author) {
         Author authorDb = findById(author.getId());
         authorDb.setId(author.getId());
         authorDb.setFullName(author.getFullName());
         authorDb.setNationality(author.getNationality());
         authorDb.setDateOfBirth(author.getDateOfBirth());
+        authorDb.setBooks(author.getBooks());
         return authorRepository.save(authorDb);
     }
+
+    @Transactional
+    public void authorDelete(Long id) {
+        authorRepository.deleteById(id);
+    }
 }
+
+
 
 

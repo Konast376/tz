@@ -37,11 +37,6 @@ public class BookService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
-        bookRepository.deleteById(id);
-    }
-
-    @Transactional
     public Book updateBook(Book book) {
         Book bookDb = findById(book.getId());
         bookDb.setId(book.getId());
@@ -50,6 +45,12 @@ public class BookService {
         bookDb.setPublicationYear(book.getPublicationYear());
         bookDb.setAuthor(book.getAuthor());
         return bookRepository.save(bookDb);
+    }
 
+    @Transactional
+    public void deleteById(Long id) {
+        bookRepository.deleteById(id);
     }
 }
+
+

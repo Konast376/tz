@@ -37,13 +37,7 @@ public class AuthorService {
 
     @Transactional
     public Author updateAuthor(Author author) {
-        Author authorDb = findById(author.getId());
-        authorDb.setId(author.getId());
-        authorDb.setFullName(author.getFullName());
-        authorDb.setNationality(author.getNationality());
-        authorDb.setDateOfBirth(author.getDateOfBirth());
-        authorDb.setBooks(author.getBooks());
-        return authorRepository.save(authorDb);
+        return authorRepository.save(author);
     }
 
     @Transactional

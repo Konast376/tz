@@ -14,8 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * TODO Дописать на все методы интеграционные тесты: на geenway и на исключительные ситуации (при получении по идентификатору нет такой сущности)
+ */
 @RestController
-@RequestMapping("/api/author")
+@RequestMapping("/authors")
 class AuthorController {
     private final AuthorService authorService;
     private final AuthorMapper authorMapper;
@@ -25,6 +28,12 @@ class AuthorController {
         this.authorMapper = authorMapper;
     }
 
+    /**
+     * TODO AuthorDto заменить на CreateAuthorDto, содержащую только необходимые данные для создания
+     * TODO Переделать на создание через аргумент в сервисе
+     * TODO Доработать интеграционные тесты
+     * TODO Доработать unit-тесты на сервис
+     */
     @PostMapping("/create")
     public AuthorDto create(@RequestBody AuthorDto authorDto) {
         Author author = authorMapper.authorDtoToAuthor(authorDto);
@@ -41,19 +50,20 @@ class AuthorController {
         return result;
     }
 
-    @GetMapping("/get")
-    public AuthorDto get(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    public AuthorDto get(@PathVariable Long id) {
         return authorMapper.authorToAuthorDto(authorService.findById(id));
     }
 
-    @GetMapping("/update")
-    public AuthorDto updateAuthor(@RequestBody AuthorDto authorDto) {
+    @PostMapping("/{id}/update")
+    public AuthorDto updateAuthor(@PathVariable Long id,
+                                  @RequestBody AuthorDto authorDto) {
         Author author = authorMapper.authorDtoToAuthor(authorDto);
         return authorMapper.authorToAuthorDto(authorService.updateAuthor(author));
     }
 
-    @PostMapping("/delete")
-    public void delete(@RequestParam Long id) {
+    @PostMapping("/{id}/delete")
+    public void delete(@PathVariable Long id) {
         authorService.authorDelete(id);
     }
 }

@@ -66,6 +66,7 @@ class AuthorServiceTest {
         assertEquals(author, result);
     }
 
+    /** TODO: Переделать на обновление через аргумент. Переписать тест в соответствии с изменениями. */
     @Test
     void updateAuthor() {
         //arrange

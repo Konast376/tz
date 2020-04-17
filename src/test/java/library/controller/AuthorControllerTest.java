@@ -1,18 +1,18 @@
-package library.service;
+package library.controller;
 
 import library.AuthorService;
 import library.argument.UpdateAuthorArgument;
+import library.controller.dto.AuthorDto;
+import library.controller.dto.CreateAuthorDto;
 import library.entity.Author;
-import library.repository.AuthorRepository;
-import lombok.var;
-import org.assertj.core.api.BDDSoftAssertions;
+import library.service.CreateAuthorArgument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Pageable;
 
 import java.time.Instant;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
@@ -20,48 +20,42 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
-class AuthorServiceTest {
+public class AuthorControllerTest {
 
-    @Captor
-    private ArgumentCaptor<Author> authorCaptor;
-
-    @InjectMocks
-    AuthorService service;
     @Mock
-    AuthorRepository repository;
-
-    private final String fullName = "full name";
-    private final Date dateOfBirth = new Date(1970, Calendar.DECEMBER,31);
-    private final String nationality = "";
+    AuthorService service;
 
     @BeforeEach
-   void setUp() throws Exception{
+    public void init() {
         MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    void createAuthor(BDDSoftAssertions softly) {
-    //arrange
-    CreateAuthorArgument argument = mock(CreateAuthorArgument.class);
-    when(argument.getFullName()).thenReturn(fullName);
-    when(argument.getDateOfBirth()).thenReturn(dateOfBirth);
-    when(argument.getNationality()).thenReturn(nationality);
+    void createAuthor() {
+        //arrange
+        CreateAuthorDto body = mock(CreateAuthorDto.class);
 
-    Author savedAuthor = mock(Author.class);
-    when(repository.save(any())).thenReturn(savedAuthor);
 
-    //act
-    Author result = service.create(argument);
+        Author savedAuthor = mock(Author.class);
+        when(repository.save(any())).thenReturn(savedAuthor);
 
-    //assert
+        //act
+        Author result = service.create(argument);
+
+        //assert
         assertThat(result).isEqualTo(savedAuthor);
-    verify(repository).save(authorCaptor.capture());
-        softly.then(result.getFullName()).isEqualTo(argument.getFullName());
-        softly.then(result.getDateOfBirth()).isEqualTo(argument.getDateOfBirth());
-        softly.then(result.getNationality()).isEqualTo(argument.getNationality());
-    verifyNoMoreInteractions(repository);
-}
+        verify(repository).save(authorCaptor.capture());
+        assertThat(authorCaptor.getValue())
+                .lazyCheck(Author :: getId, null);
+                .lazyCheck(Author :: getFullName, argument.getFullName())
+                .lazyCheck(Author :: getDateOfBirth, argument.getDateOfBirth())
+                .lazyCheck(Author :: getNationality, argument.getNationality())
+                .check();
+
+        verifyNoMoreInteractions(repository);
+    }
 
     @Test
     void findAll() {
@@ -120,6 +114,6 @@ class AuthorServiceTest {
         service.delete(1L);
 
         //assert
-        verify(repository).deleteById(1L);
+        verify(service).delete(1L);
     }
 }

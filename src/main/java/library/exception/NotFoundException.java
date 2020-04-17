@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Record not found with id :")
-public class EntityNotFoundException extends RuntimeException {
+public class NotFoundException extends RuntimeException {
 
-    public EntityNotFoundException(String message) {
+    public NotFoundException(String message) {
         super(message);
     }
 }

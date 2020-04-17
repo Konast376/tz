@@ -1,5 +1,7 @@
 package library.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,10 +9,13 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
+
 @Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "authors")
+@Table(name = "author")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +23,7 @@ public class Author {
     private Long id;
     @Column(nullable = false)
     private String fullName;
-    @Column(nullable = false)
+    @Column
     private Date dateOfBirth;
     @Column
     private String nationality;

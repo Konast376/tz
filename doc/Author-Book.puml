@@ -1,0 +1,20 @@
+@startuml
+class Author {
+id: Long
+fullName : String
+dateOfBirth : Date
+nationality : String
+}
+
+class Book {
+id : Long
+bookName : String
+numberOfPages : int
+publicationYear : Date
+author : Author
+}
+
+Book "*"--> "1" Author
+@enduml
+
+

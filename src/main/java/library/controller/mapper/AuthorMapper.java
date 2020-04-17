@@ -1,13 +1,19 @@
 package library.controller.mapper;
 
+import library.argument.UpdateAuthorArgument;
 import library.controller.dto.AuthorDto;
+import library.controller.dto.CreateAuthorDto;
+import library.controller.dto.UpdateAuthorDto;
 import library.entity.Author;
-import library.service.AuthorService;
+import library.AuthorService;
+import library.service.CreateAuthorArgument;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel="spring", uses= AuthorService.class)
 public interface AuthorMapper {
-    AuthorDto authorToAuthorDto(Author author);
+  CreateAuthorArgument toCreateArgument (CreateAuthorDto dto);
 
-    Author authorDtoToAuthor(AuthorDto authorDto);
+  AuthorDto toDto(Author author);
+
+  UpdateAuthorArgument toUpdateArgument (UpdateAuthorDto dto);
 }

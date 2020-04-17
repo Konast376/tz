@@ -1,21 +1,21 @@
 package library.controller;
 
+import com.whitesoft.api.dto.CollectionDTO;
+import com.whitesoft.api.mappers.MapperUtils;
+import io.swagger.annotations.ApiOperation;
 import library.controller.dto.AuthorDto;
+import library.controller.dto.CreateAuthorDto;
+import library.controller.dto.UpdateAuthorDto;
 import library.controller.mapper.AuthorMapper;
-import library.entity.Author;
-import library.service.AuthorService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import library.AuthorService;
+import lombok.Builder;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
+@Builder
 @RestController
-@RequestMapping("/api/author")
+@RequestMapping("/authors")
 class AuthorController {
     private final AuthorService authorService;
     private final AuthorMapper authorMapper;
@@ -25,35 +25,39 @@ class AuthorController {
         this.authorMapper = authorMapper;
     }
 
+    @ApiOperation("Создать автора")
     @PostMapping("/create")
-    public AuthorDto create(@RequestBody AuthorDto authorDto) {
-        Author author = authorMapper.authorDtoToAuthor(authorDto);
-        return authorMapper.authorToAuthorDto(authorService.createAuthor(author));
+    public AuthorDto create(@RequestBody CreateAuthorDto body) {
+        return authorMapper.toDto(authorService.create(authorMapper.toCreateArgument(body)));
     }
 
+    @ApiOperation("Получить список авторов")
     @GetMapping("/list")
-    public List<AuthorDto> getAllAuthors(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Author> authors = authorService.findAll(pageable);
-        List<AuthorDto> result = new ArrayList<>();
-        for (Author author : authors.getContent()) {
-            result.add(authorMapper.authorToAuthorDto(author));
-        }
-        return result;
+    public CollectionDTO<AuthorDto> getAllAuthors(@RequestParam(name = "pageNo") int pageNo,
+                                         @RequestParam(name = "pageSize") int pageSize ,
+                                         @RequestParam(name = "sortField", defaultValue = "id") String sortField,
+                                         @RequestParam(name = "sortDirection", defaultValue = "DESC") Sort.Direction sortDirection){
+        return MapperUtils.mapPage(authorMapper :: toDto,
+                                   authorService.findAll(PageRequest.of(pageNo, pageSize,
+                                            Sort.by(sortDirection, sortField))));
     }
 
-    @GetMapping("/get")
-    public AuthorDto get(@RequestParam Long id) {
-        return authorMapper.authorToAuthorDto(authorService.findById(id));
+    @ApiOperation("Получить автора")
+    @GetMapping("/{id}")
+    public AuthorDto get(@PathVariable Long id) {
+        return authorMapper.toDto(authorService.getExisting(id));
     }
 
-    @GetMapping("/update")
-    public AuthorDto updateAuthor(@RequestBody AuthorDto authorDto) {
-        Author author = authorMapper.authorDtoToAuthor(authorDto);
-        return authorMapper.authorToAuthorDto(authorService.updateAuthor(author));
+    @ApiOperation("Обновить автора")
+    @GetMapping("/{id}/update")
+    public AuthorDto update(@PathVariable Long id,
+                            @RequestBody UpdateAuthorDto body) {
+        return authorMapper.toDto(authorService.update(id, authorMapper.toUpdateArgument(body)));
     }
 
-    @PostMapping("/delete")
-    public void delete(@RequestParam Long id) {
-        authorService.authorDelete(id);
+    @ApiOperation("Удалить автора")
+    @PostMapping("/{id}/delete")
+    public void delete(@PathVariable Long id) {
+        authorService.delete(id);
     }
 }

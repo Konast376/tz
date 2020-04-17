@@ -4,8 +4,8 @@ import library.controller.dto.BookDto;
 import library.controller.mapper.BookMapper;
 import library.entity.Author;
 import library.entity.Book;
-import library.service.AuthorService;
-import library.service.BookService;
+import library.AuthorService;
+import library.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -53,7 +53,7 @@ public class BookController {
 
     @GetMapping("/authorBooks")
     public Set<BookDto> findAuthorBooks(@RequestParam Long id) {
-        Author author = authorService.findById(id);
+        Author author = authorService.getExisting(id);
         Set<BookDto> result = new HashSet<>();
         for (Book book : author.getBooks()) {
             result.add(bookMapper.bookToBookDto(book));

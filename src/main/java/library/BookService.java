@@ -1,7 +1,7 @@
-package library.service;
+package library;
 
 import library.entity.Book;
-import library.exception.EntityNotFoundException;
+import library.exception.NotFoundException;
 import library.repository.BookRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +33,7 @@ public class BookService {
     @Transactional
     public Book findById(Long id) {
         Optional<Book> bookDb = bookRepository.findById(id);
-        return bookDb.orElseThrow(() -> new EntityNotFoundException("Record not found with id! "));
+        return bookDb.orElseThrow(() -> new NotFoundException("Record not found with id! "));
     }
 
     @Transactional

@@ -2,7 +2,7 @@ package library.controller.mapper;
 
 import library.controller.dto.BookDto;
 import library.entity.Book;
-import library.service.BookService;
+import library.BookService;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel="spring", uses= BookService.class)

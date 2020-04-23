@@ -35,8 +35,8 @@ public class AuthorControllerIT {
                                            .build();
 
     @Test
-    @DataSet(value = "/api/empty.json", cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet("/api/create__expected.json")
+    @DataSet(value = "datasets/author/api/empty.json", cleanAfter = true, cleanBefore = true)
+    @ExpectedDataSet("datasets/author/api/create__expected.json")
     void createWhenIdNotNull() throws Exception {
         // Arrange
         CreateAuthorDto authorDto = CreateAuthorDto.builder()

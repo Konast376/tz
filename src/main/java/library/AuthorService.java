@@ -49,7 +49,7 @@ public class AuthorService {
 
     @Transactional
     public Author update(@NonNull Long id, @NonNull UpdateAuthorArgument argument){
-        Guard.checkArgumentValid(argument.getFullName() == null, FULLNAME_IS_MANDATORY );
+        Guard.checkArgumentValid(argument.getFullName() != null, FULLNAME_IS_MANDATORY );
 
         Author author = getExisting(id);
         author.setFullName(argument.getFullName());

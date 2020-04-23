@@ -1,119 +1,142 @@
 package library.controller;
 
+import com.whitesoft.api.dto.CollectionDTO;
 import library.AuthorService;
 import library.argument.UpdateAuthorArgument;
 import library.controller.dto.AuthorDto;
 import library.controller.dto.CreateAuthorDto;
+import library.controller.dto.UpdateAuthorDto;
+import library.controller.mapper.AuthorMapper;
 import library.entity.Author;
 import library.service.CreateAuthorArgument;
-import org.junit.jupiter.api.BeforeEach;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Pageable;
-
-import java.time.Instant;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Set;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.testcontainers.shaded.com.google.common.collect.Lists;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 
+
+@ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
 public class AuthorControllerTest {
+
+    @InjectMocks
+    AuthorController controller;
+
+    @Mock
+    AuthorMapper mapper;
 
     @Mock
     AuthorService service;
 
-    @BeforeEach
-    public void init() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     void createAuthor() {
         //arrange
         CreateAuthorDto body = mock(CreateAuthorDto.class);
-
+        CreateAuthorArgument argument = mock(CreateAuthorArgument.class);
+        when(mapper.toCreateArgument(any())).thenReturn(argument);
 
         Author savedAuthor = mock(Author.class);
-        when(repository.save(any())).thenReturn(savedAuthor);
+        when(service.create(any())).thenReturn(savedAuthor);
+
+        AuthorDto dto = mock(AuthorDto.class);
+        when(mapper.toDto(any())).thenReturn(dto);
 
         //act
-        Author result = service.create(argument);
+        AuthorDto result = controller.create(body);
 
         //assert
-        assertThat(result).isEqualTo(savedAuthor);
-        verify(repository).save(authorCaptor.capture());
-        assertThat(authorCaptor.getValue())
-                .lazyCheck(Author :: getId, null);
-                .lazyCheck(Author :: getFullName, argument.getFullName())
-                .lazyCheck(Author :: getDateOfBirth, argument.getDateOfBirth())
-                .lazyCheck(Author :: getNationality, argument.getNationality())
-                .check();
+        assertThat(result).isEqualTo(dto);
 
-        verifyNoMoreInteractions(repository);
+        verify(service).create(argument);
+        verify(mapper).toDto(savedAuthor);
+        verify(mapper).toCreateArgument(body);
+        verifyNoMoreInteractions(service, mapper);
     }
 
-    @Test
-    void findAll() {
-        //arrange
-        Pageable pageable = mock(Pageable.class);
-
-        //act
-        service.findAll(pageable);
-
-        //assert
-        verify(repository).findAll(pageable);
-    }
 
     @Test
-    void getExisting() {
+    void getAllAuthors() {
         //arrange
+        int pageNo = 1;
+        int pageSize = 1;
+        String sortField = "test sorting field";
+        Sort.Direction sortDirection = Sort.Direction.DESC;
         Author author = mock(Author.class);
-        when(repository.findById(1L)).thenReturn(Optional.of(author));
+        AuthorDto dto = mock(AuthorDto.class);
+
+        when(mapper.toDto(any())).thenReturn(dto);
+        when(service.findAll(any())).thenReturn(new PageImpl<>(Lists.newArrayList(author)));
 
         //act
-        Author result = service.getExisting(1L);
+        CollectionDTO<AuthorDto> result = controller.getAllAuthors(pageNo, pageSize, sortField, sortDirection);
 
         //assert
-        assertEquals(author, result);
+        Assertions.assertThat(result.getItems()).containsOnly(dto);
+
+        verify(mapper).toDto(author);
+        verify(service).findAll(PageRequest.of(pageNo, pageSize, sortDirection, sortField));
+        verifyNoMoreInteractions(mapper, service);
     }
 
     @Test
-    void updateAuthor() {
+    void get() {
         //arrange
+        AuthorDto dto = mock(AuthorDto.class);
+        Author author = mock(Author.class);
+        when(service.getExisting(1L)).thenReturn(author);
+        when(mapper.toDto(author)).thenReturn(dto);
+
+        //act
+        AuthorDto result = controller.get(1L);
+
+        //assert
+        assertEquals(dto, result);
+    }
+
+    @Test
+    void update() {
+        //arrange
+        long id = 1L;
+        UpdateAuthorDto body = mock(UpdateAuthorDto.class);
         UpdateAuthorArgument argument = mock(UpdateAuthorArgument.class);
-        when(argument.getFullName()).thenReturn(fullName);
-        when(argument.getDateOfBirth()).thenReturn(dateOfBirth);
-        when(argument.getNationality()).thenReturn(nationality);
+        Author update = mock(Author.class);
+        AuthorDto dto = mock(AuthorDto.class);
 
-        Author author = mock(Author.class);
-        when(repository.findById(1L)).thenReturn(Optional.of(author));
+        when(mapper.toUpdateArgument(body)).thenReturn(argument);
 
-        Author savedAuthor = mock(Author.class);
-        when(repository.save(author)).thenReturn(savedAuthor);
+        when(service.update(id, argument)).thenReturn(update);
+        when(mapper.toDto(update)).thenReturn(dto);
+
         //act
-        Author result = service.update(author.getId(), argument);
+        AuthorDto result = controller.update(id, body);
 
         //assert
-        assertThat(result).isEqualTo(savedAuthor);
+        assertThat(result).isEqualTo(dto);
 
-        verify(author).setFullName(argument.getFullName());
-        verify(author).setDateOfBirth(argument.getDateOfBirth());
-        verify(author).setNationality(argument.getNationality());
-
-        verifyNoMoreInteractions(author);
+        verify(mapper).toUpdateArgument(body);
+        verify(service).update(id, argument);
+        verify(mapper).toDto(update);
+        verifyNoMoreInteractions(dto);
     }
 
     @Test
     void delete() {
         //act
-        service.delete(1L);
+        controller.delete(1L);
 
         //assert
         verify(service).delete(1L);
     }
+
 }

@@ -37,9 +37,10 @@ class AuthorController {
                                          @RequestParam(name = "pageSize") int pageSize ,
                                          @RequestParam(name = "sortField", defaultValue = "id") String sortField,
                                          @RequestParam(name = "sortDirection", defaultValue = "DESC") Sort.Direction sortDirection){
+
         return MapperUtils.mapPage(authorMapper :: toDto,
                                    authorService.findAll(PageRequest.of(pageNo, pageSize,
-                                            Sort.by(sortDirection, sortField))));
+                                                                        Sort.by(sortDirection, sortField))));
     }
 
     @ApiOperation("Получить автора")

@@ -1,23 +1,15 @@
 package library.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.google.common.collect.Sets;
 import com.jupiter.tools.spring.test.postgres.annotation.meta.EnablePostgresIntegrationTest;
 import com.whitesoft.api.dto.CollectionDTO;
-import com.whitesoft.api.dto.SimpleValueDTO;
-import com.whitesoft.cloud.api.dto.mailbox.AttachmentDTO;
-import com.whitesoft.util.Tuples;
 import library.AuthorService;
 import library.argument.UpdateAuthorArgument;
 import library.controller.dto.AuthorDto;
 import library.controller.dto.CreateAuthorDto;
 import library.controller.dto.UpdateAuthorDto;
 import library.service.CreateAuthorArgument;
-import lombok.var;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -28,9 +20,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.OK;
 
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = "15s")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnablePostgresIntegrationTest
 public class AuthorControllerIT {
@@ -41,10 +32,10 @@ public class AuthorControllerIT {
     AuthorService service;
 
     final AuthorDto expectedDto = AuthorDto.builder()
-            .fullName("full name")
-            .dateOfBirth(new Date(1))
-            .nationality("nationality")
-            .build();
+                                           .fullName("full name")
+                                           .dateOfBirth(new Date(1))
+                                           .nationality("nationality")
+                                           .build();
 
     @Test
     @DataSet(value = "/datasets/author/api/empty.json", cleanAfter = true, cleanBefore = true)
@@ -52,22 +43,22 @@ public class AuthorControllerIT {
     void createWhenIdNotNull() throws Exception {
         // Arrange
         CreateAuthorDto authorDto = CreateAuthorDto.builder()
-                .fullName("full name")
-                .nationality("nationality")
-                .dateOfBirth(new Date(1))
-                .build();
+                                                   .fullName("full name")
+                                                   .nationality("nationality")
+                                                   .dateOfBirth(new Date(1))
+                                                   .build();
         // Act
         AuthorDto result = client.post()
-                .uri("/authors/create")
-                .bodyValue(authorDto)
-                .exchange()
+                                 .uri("/authors/create")
+                                 .bodyValue(authorDto)
+                                 .exchange()
 
-                // Assert
-                .expectStatus()
-                .isCreated()
-                .expectBody(AuthorDto.class)
-                .returnResult()
-                .getResponseBody();
+                                 // Assert
+                                 .expectStatus()
+                                 .isCreated()
+                                 .expectBody(AuthorDto.class)
+                                 .returnResult()
+                                 .getResponseBody();
 
         assertThat(result).isEqualToIgnoringGivenFields(expectedDto, "id");
 
@@ -81,23 +72,23 @@ public class AuthorControllerIT {
     void update() throws Exception {
         // Arrange
         UpdateAuthorDto updateDto = UpdateAuthorDto.builder()
-                .fullName("full name")
-                .nationality("nationality")
-                .dateOfBirth(new Date(1))
-                .build();
+                                                   .fullName("full name")
+                                                   .nationality("nationality")
+                                                   .dateOfBirth(new Date(1))
+                                                   .build();
 
         // Act
         AuthorDto result = client.post()
-                .uri("/authors/{id}/update", id)
-                .bodyValue(updateDto)
-                .exchange()
+                                 .uri("/authors/{id}/update", id)
+                                 .bodyValue(updateDto)
+                                 .exchange()
 
-                // Assert
-                .expectStatus()
-                .isOk()
-                .expectBody(AuthorDto.class)
-                .returnResult()
-                .getResponseBody();
+                                 // Assert
+                                 .expectStatus()
+                                 .isOk()
+                                 .expectBody(AuthorDto.class)
+                                 .returnResult()
+                                 .getResponseBody();
 
         assertThat(result).isEqualToIgnoringGivenFields(expectedDto, "id");
         assertThat(service.update(id, UpdateAuthorArgument.builder().build()));
@@ -110,16 +101,15 @@ public class AuthorControllerIT {
 
         // Act
         client.post()
-                .uri("/authors/{id}/update", id)
-                .exchange()
+              .uri("/authors/{id}/update", id)
+              .exchange()
 
-                // Assert
-                .expectStatus().isNotFound()
-                .expectBody().json("{\"status\":404," +
-                "\"error\":\"Not Found\"," +
-                "\"message\":\"Record not found with id :\"," +
-                "\"path\":\"/authors/1\"}}");
-
+              // Assert
+              .expectStatus().isNotFound()
+              .expectBody().json("{\"status\":404," +
+                                 "\"error\":\"Not Found\"," +
+                                 "\"message\":\"Record not found with id :\"," +
+                                 "\"path\":\"/authors/1\"}}");
 
     }
 
@@ -129,15 +119,15 @@ public class AuthorControllerIT {
     void getWhenNotExists() throws Exception {
         // Act
         client.get()
-                .uri("/authors/{id}", id)
-                .exchange()
+              .uri("/authors/{id}", id)
+              .exchange()
 
-                // Assert
-                .expectStatus().isNotFound()
-                .expectBody().json("{\"status\":404," +
-                "\"error\":\"Not Found\"," +
-                "\"message\":\"Record not found with id :\"," +
-                "\"path\":\"/authors/1\"}}");
+              // Assert
+              .expectStatus().isNotFound()
+              .expectBody().json("{\"status\":404," +
+                                 "\"error\":\"Not Found\"," +
+                                 "\"message\":\"Record not found with id :\"," +
+                                 "\"path\":\"/authors/1\"}}");
     }
 
     @Test
@@ -146,15 +136,15 @@ public class AuthorControllerIT {
     void getExist() throws Exception {
         // Act
         AuthorDto result = client.get()
-                .uri("/authors/{id}", id)
-                .exchange()
+                                 .uri("/authors/{id}", id)
+                                 .exchange()
 
-                // Assert
-                .expectStatus()
-                .isOk()
-                .expectBody(AuthorDto.class)
-                .returnResult()
-                .getResponseBody();
+                                 // Assert
+                                 .expectStatus()
+                                 .isOk()
+                                 .expectBody(AuthorDto.class)
+                                 .returnResult()
+                                 .getResponseBody();
         assertThat(result).isEqualToIgnoringGivenFields(expectedDto, "id");
         assertThat(service.getExisting(id));
     }
@@ -164,20 +154,19 @@ public class AuthorControllerIT {
     void list() throws Exception {
         // Act
         CollectionDTO<AuthorDto> result = client.get().uri(uriBuilder -> uriBuilder.path("/authors/list")
-                .queryParam("pageNo", 0)
-                .queryParam("pageSize", 10)
-                .queryParam("sortField", "id")
-                .queryParam("sortDirection", "DESC")
-                .build())
+                                                                                   .queryParam("pageNo", 0)
+                                                                                   .queryParam("pageSize", 10)
+                                                                                   .queryParam("sortField", "id")
+                                                                                   .queryParam("sortDirection", "DESC")
+                                                                                   .build())
 
-                .exchange()
+                                                .exchange()
 
-                // Assert
-                .expectStatus()
-                .isOk()
-                .expectBody(new ParameterizedTypeReference<CollectionDTO<AuthorDto>>() {})
-                .returnResult().getResponseBody();
-
+                                                // Assert
+                                                .expectStatus()
+                                                .isOk()
+                                                .expectBody(new ParameterizedTypeReference<CollectionDTO<AuthorDto>>() {})
+                                                .returnResult().getResponseBody();
 
     }
 
@@ -187,12 +176,12 @@ public class AuthorControllerIT {
     void delete() throws Exception {
         // Act
         client.post()
-                .uri("/authors/{id}/delete", id)
-                .exchange()
+              .uri("/authors/{id}/delete", id)
+              .exchange()
 
-                // Assert
-                .expectStatus()
-                .isOk();
+              // Assert
+              .expectStatus()
+              .isOk();
     }
 
     @Test
@@ -201,15 +190,15 @@ public class AuthorControllerIT {
     void deleteNotFound() throws Exception {
         // Act
         client.post()
-                .uri("/authors/{id}/delete", id)
-                .exchange()
+              .uri("/authors/{id}/delete", id)
+              .exchange()
 
-                // Assert
-                .expectStatus().isNotFound()
-                .expectBody().json("{\"status\":404," +
-                "\"error\":\"Not Found\"," +
-                "\"message\":\"Record not found with id :\"," +
-                "\"path\":\"/authors/1\"}}");
+              // Assert
+              .expectStatus().isNotFound()
+              .expectBody().json("{\"status\":404," +
+                                 "\"error\":\"Not Found\"," +
+                                 "\"message\":\"Record not found with id :\"," +
+                                 "\"path\":\"/authors/1\"}}");
     }
 }
 

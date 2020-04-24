@@ -3,14 +3,15 @@ package library.controller;
 import com.whitesoft.api.dto.CollectionDTO;
 import com.whitesoft.api.mappers.MapperUtils;
 import io.swagger.annotations.ApiOperation;
+import library.AuthorService;
 import library.controller.dto.AuthorDto;
 import library.controller.dto.CreateAuthorDto;
 import library.controller.dto.UpdateAuthorDto;
 import library.controller.mapper.AuthorMapper;
-import library.AuthorService;
 import lombok.Builder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @Builder
@@ -27,6 +28,7 @@ class AuthorController {
 
     @ApiOperation("Создать автора")
     @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
     public AuthorDto create(@RequestBody CreateAuthorDto body) {
         return authorMapper.toDto(authorService.create(authorMapper.toCreateArgument(body)));
     }
@@ -34,11 +36,11 @@ class AuthorController {
     @ApiOperation("Получить список авторов")
     @GetMapping("/list")
     public CollectionDTO<AuthorDto> getAllAuthors(@RequestParam(name = "pageNo") int pageNo,
-                                         @RequestParam(name = "pageSize") int pageSize ,
-                                         @RequestParam(name = "sortField", defaultValue = "id") String sortField,
-                                         @RequestParam(name = "sortDirection", defaultValue = "DESC") Sort.Direction sortDirection){
+                                                  @RequestParam(name = "pageSize") int pageSize,
+                                                  @RequestParam(name = "sortField", defaultValue = "id") String sortField,
+                                                  @RequestParam(name = "sortDirection", defaultValue = "DESC") Sort.Direction sortDirection) {
 
-        return MapperUtils.mapPage(authorMapper :: toDto,
+        return MapperUtils.mapPage(authorMapper::toDto,
                                    authorService.findAll(PageRequest.of(pageNo, pageSize,
                                                                         Sort.by(sortDirection, sortField))));
     }

@@ -9,7 +9,6 @@ import library.argument.UpdateAuthorArgument;
 import library.controller.dto.AuthorDto;
 import library.controller.dto.CreateAuthorDto;
 import library.controller.dto.UpdateAuthorDto;
-import library.service.CreateAuthorArgument;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -61,9 +60,6 @@ public class AuthorControllerIT {
                                  .getResponseBody();
 
         assertThat(result).isEqualToIgnoringGivenFields(expectedDto, "id");
-
-        assertThat(service.create(CreateAuthorArgument.builder().build()));
-
     }
 
     @Test

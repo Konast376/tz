@@ -1,0 +1,29 @@
+{
+  "author": [
+    {
+      "id": 1,
+      "full_name": "Владимиров",
+      "date_of_birth": "1970-01-02 00:00:00.001",
+      "nationality": "-"
+    },
+    {
+      "id": 2,
+      "full_name": "Иванов",
+      "date_of_birth": "1970-01-02 00:00:00.001",
+      "nationality": "-"
+    },
+    {
+      "id": 3,
+      "full_name": "Петров",
+      "date_of_birth": "1970-01-02 00:00:00.001",
+      "nationality": "-"
+    },
+    {
+      "id": 4,
+      "full_name": "Сечин",
+      "date_of_birth": "1970-01-02 00:00:00.001",
+      "nationality": "-"
+    }
+  ]
+
+}

@@ -4,11 +4,13 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.jupiter.tools.spring.test.postgres.annotation.meta.EnablePostgresIntegrationTest;
 import com.whitesoft.api.dto.CollectionDTO;
+import com.whitesoft.api.dto.SimpleValueDTO;
 import library.AuthorService;
 import library.argument.UpdateAuthorArgument;
 import library.controller.dto.AuthorDto;
 import library.controller.dto.CreateAuthorDto;
 import library.controller.dto.UpdateAuthorDto;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -32,7 +34,7 @@ public class AuthorControllerIT {
 
     final AuthorDto expectedDto = AuthorDto.builder()
                                            .fullName("full name")
-                                           .dateOfBirth(new Date(1))
+                                           .dateOfBirth(new Date(1212121212121L))
                                            .nationality("nationality")
                                            .build();
 
@@ -44,7 +46,7 @@ public class AuthorControllerIT {
         CreateAuthorDto authorDto = CreateAuthorDto.builder()
                                                    .fullName("full name")
                                                    .nationality("nationality")
-                                                   .dateOfBirth(new Date(1))
+                                                   .dateOfBirth(new Date(1212121212121L))
                                                    .build();
         // Act
         AuthorDto result = client.post()
@@ -70,7 +72,7 @@ public class AuthorControllerIT {
         UpdateAuthorDto updateDto = UpdateAuthorDto.builder()
                                                    .fullName("full name")
                                                    .nationality("nationality")
-                                                   .dateOfBirth(new Date(1))
+                                                   .dateOfBirth(new Date(1212121212121L))
                                                    .build();
 
         // Act
@@ -86,27 +88,7 @@ public class AuthorControllerIT {
                                  .returnResult()
                                  .getResponseBody();
 
-        assertThat(result).isEqualToIgnoringGivenFields(expectedDto, "id");
-        assertThat(service.update(id, UpdateAuthorArgument.builder().build()));
-    }
-
-    @Test
-    @DataSet(value = "/datasets/author/api/update.json", cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet("/datasets/author/api/empty.json")
-    void updateNotFound() throws Exception {
-
-        // Act
-        client.post()
-              .uri("/authors/{id}/update", id)
-              .exchange()
-
-              // Assert
-              .expectStatus().isNotFound()
-              .expectBody().json("{\"status\":404," +
-                                 "\"error\":\"Not Found\"," +
-                                 "\"message\":\"Record not found with id :\"," +
-                                 "\"path\":\"/authors/1\"}}");
-
+        assertThat(result).isEqualToIgnoringGivenFields(expectedDto, "id", "books");
     }
 
     @Test
@@ -141,8 +123,7 @@ public class AuthorControllerIT {
                                  .expectBody(AuthorDto.class)
                                  .returnResult()
                                  .getResponseBody();
-        assertThat(result).isEqualToIgnoringGivenFields(expectedDto, "id");
-        assertThat(service.getExisting(id));
+        assertThat(result).isEqualToIgnoringGivenFields(expectedDto, "id", "books");
     }
 
     @Test
@@ -163,12 +144,13 @@ public class AuthorControllerIT {
                                                 .isOk()
                                                 .expectBody(new ParameterizedTypeReference<CollectionDTO<AuthorDto>>() {})
                                                 .returnResult().getResponseBody();
-
+        Assertions.assertThat(result.getTotalCount()).isEqualTo(1);
+        assertThat(result.getItems().get(0)).isEqualToIgnoringGivenFields(expectedDto, "id", "books");
     }
 
     @Test
     @DataSet(value = "/datasets/author/api/delete.json", cleanBefore = true, cleanAfter = true)
-    @ExpectedDataSet("/datasets/author/api/empty.json")
+    @ExpectedDataSet("/datasets/author/api/delete__expected.json")
     void delete() throws Exception {
         // Act
         client.post()
@@ -180,21 +162,5 @@ public class AuthorControllerIT {
               .isOk();
     }
 
-    @Test
-    @DataSet(value = "/datasets/author/api/empty.json", cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet("/datasets/author/api/empty.json")
-    void deleteNotFound() throws Exception {
-        // Act
-        client.post()
-              .uri("/authors/{id}/delete", id)
-              .exchange()
-
-              // Assert
-              .expectStatus().isNotFound()
-              .expectBody().json("{\"status\":404," +
-                                 "\"error\":\"Not Found\"," +
-                                 "\"message\":\"Record not found with id :\"," +
-                                 "\"path\":\"/authors/1\"}}");
-    }
 }
 

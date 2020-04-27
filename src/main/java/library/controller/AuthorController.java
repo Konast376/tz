@@ -52,7 +52,7 @@ class AuthorController {
     }
 
     @ApiOperation("Обновить автора")
-    @GetMapping("/{id}/update")
+    @PostMapping("/{id}/update")
     public AuthorDto update(@PathVariable Long id,
                             @RequestBody UpdateAuthorDto body) {
         return authorMapper.toDto(authorService.update(id, authorMapper.toUpdateArgument(body)));

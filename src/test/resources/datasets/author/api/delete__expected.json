@@ -1,0 +1,16 @@
+{
+  "author": [
+    {
+      "id": 2,
+      "full_name": "full name",
+      "date_of_birth": "2008-05-30 15:20:12.121",
+      "nationality": "nationality"
+    },
+    {
+      "id": 3,
+      "full_name": "full name",
+      "date_of_birth": "2008-05-30 15:20:12.121",
+      "nationality": "nationality"
+    }
+  ]
+}

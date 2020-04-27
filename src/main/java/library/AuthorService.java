@@ -1,6 +1,5 @@
 package library;
 
-import com.whitesoft.util.Guard;
 import library.argument.UpdateAuthorArgument;
 import library.entity.Author;
 import library.exception.NotFoundException;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
-import static library.errorinfo.AuthorErrorInfo.FULLNAME_IS_MANDATORY;
 
 @Service
 
@@ -49,7 +46,6 @@ public class AuthorService {
 
     @Transactional
     public Author update(@NonNull Long id, @NonNull UpdateAuthorArgument argument){
-        Guard.checkArgumentValid(argument.getFullName() != null, FULLNAME_IS_MANDATORY );
 
         Author author = getExisting(id);
         author.setFullName(argument.getFullName());

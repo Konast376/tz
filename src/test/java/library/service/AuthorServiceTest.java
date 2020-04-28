@@ -1,9 +1,9 @@
 package library.service;
 
-import library.AuthorService;
-import library.argument.UpdateAuthorArgument;
 import library.entity.Author;
 import library.repository.AuthorRepository;
+import library.service.argument.CreateAuthorArgument;
+import library.service.argument.UpdateAuthorArgument;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
@@ -15,15 +15,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
 class AuthorServiceTest {
 
     @Captor
@@ -31,22 +30,18 @@ class AuthorServiceTest {
 
     @InjectMocks
     AuthorService service;
+
     @Mock
     AuthorRepository repository;
-
-    private final String fullName = "fullName";
-    private final Date dateOfBirth = new Date(1970, Calendar.DECEMBER, 31);
-    private final String nationality = "";
-
-    @ExtendWith(SoftAssertionsExtension.class)
 
     @Test
     void createAuthor(BDDSoftAssertions softly) {
         //arrange
-        CreateAuthorArgument argument = mock(CreateAuthorArgument.class);
-        when(argument.getFullName()).thenReturn(fullName);
-        when(argument.getDateOfBirth()).thenReturn(dateOfBirth);
-        when(argument.getNationality()).thenReturn(nationality);
+        CreateAuthorArgument argument = CreateAuthorArgument.builder()
+                .fullName("full name")
+                .nationality("nationality")
+                .dateOfBirth(Timestamp.valueOf("2019-05-20 21:15:30.0"))
+                .build();
 
         Author savedAuthor = mock(Author.class);
         when(repository.save(any())).thenReturn(savedAuthor);
@@ -92,10 +87,11 @@ class AuthorServiceTest {
     @Test
     void updateAuthor() {
         //arrange
-        UpdateAuthorArgument argument = mock(UpdateAuthorArgument.class);
-        when(argument.getFullName()).thenReturn(fullName);
-        when(argument.getDateOfBirth()).thenReturn(dateOfBirth);
-        when(argument.getNationality()).thenReturn(nationality);
+        UpdateAuthorArgument argument = UpdateAuthorArgument.builder()
+                .fullName("full name")
+                .nationality("nationality")
+                .dateOfBirth(Timestamp.valueOf("2019-05-20 21:15:30.0"))
+                .build();
 
         Author author = mock(Author.class);
         when(repository.findById(1L)).thenReturn(Optional.of(author));

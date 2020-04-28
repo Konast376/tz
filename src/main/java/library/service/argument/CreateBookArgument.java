@@ -1,4 +1,4 @@
-package library.argument;
+package library.service.argument;
 
 import library.entity.Author;
 import lombok.Getter;

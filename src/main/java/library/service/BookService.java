@@ -1,4 +1,4 @@
-package library;
+package library.service;
 
 import library.entity.Book;
 import library.exception.NotFoundException;

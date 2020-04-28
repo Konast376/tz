@@ -1,13 +1,14 @@
-package library.argument;
+package library.service.argument;
 
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
 
 import java.util.Date;
 
-@Value
 @Builder
-public class UpdateAuthorArgument {
+@Getter
+public class CreateAuthorArgument {
+    private Long id;
     private String fullName;
     private Date dateOfBirth;
     private String nationality;

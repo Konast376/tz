@@ -1,14 +1,14 @@
 package library.controller;
 
 import com.whitesoft.api.dto.CollectionDTO;
-import library.AuthorService;
-import library.argument.UpdateAuthorArgument;
+import library.service.AuthorService;
+import library.service.argument.UpdateAuthorArgument;
 import library.controller.dto.AuthorDto;
 import library.controller.dto.CreateAuthorDto;
 import library.controller.dto.UpdateAuthorDto;
 import library.controller.mapper.AuthorMapper;
 import library.entity.Author;
-import library.service.CreateAuthorArgument;
+import library.service.argument.CreateAuthorArgument;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.testcontainers.shaded.com.google.common.collect.Lists;
 
@@ -37,7 +36,6 @@ public class AuthorControllerTest {
 
     @Mock
     AuthorService service;
-
 
     @Test
     void createAuthor() {
@@ -64,7 +62,6 @@ public class AuthorControllerTest {
         verifyNoMoreInteractions(service, mapper);
     }
 
-
     @Test
     void getAllAuthors() {
         //arrange
@@ -83,9 +80,6 @@ public class AuthorControllerTest {
 
         //assert
         Assertions.assertThat(result.getItems()).containsOnly(dto);
-
-        verify(mapper).toDto(author);
-        verify(service).findAll(PageRequest.of(pageNo, pageSize, sortDirection, sortField));
         verifyNoMoreInteractions(mapper, service);
     }
 
@@ -124,9 +118,6 @@ public class AuthorControllerTest {
         //assert
         assertThat(result).isEqualTo(dto);
 
-        verify(mapper).toUpdateArgument(body);
-        verify(service).update(id, argument);
-        verify(mapper).toDto(update);
         verifyNoMoreInteractions(dto);
     }
 
@@ -138,5 +129,4 @@ public class AuthorControllerTest {
         //assert
         verify(service).delete(1L);
     }
-
 }

@@ -3,18 +3,16 @@ package library.controller;
 import com.whitesoft.api.dto.CollectionDTO;
 import com.whitesoft.api.mappers.MapperUtils;
 import io.swagger.annotations.ApiOperation;
-import library.AuthorService;
+import library.service.AuthorService;
 import library.controller.dto.AuthorDto;
 import library.controller.dto.CreateAuthorDto;
 import library.controller.dto.UpdateAuthorDto;
 import library.controller.mapper.AuthorMapper;
-import lombok.Builder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-@Builder
 @RestController
 @RequestMapping("/authors")
 class AuthorController {
@@ -37,12 +35,12 @@ class AuthorController {
     @GetMapping("/list")
     public CollectionDTO<AuthorDto> getAllAuthors(@RequestParam(name = "pageNo") int pageNo,
                                                   @RequestParam(name = "pageSize") int pageSize,
-                                                  @RequestParam(name = "sortField", defaultValue = "id") String sortField,
-                                                  @RequestParam(name = "sortDirection", defaultValue = "DESC") Sort.Direction sortDirection) {
+                                                  @RequestParam String sortField,
+                                                  @RequestParam Sort.Direction sortDirection) {
 
         return MapperUtils.mapPage(authorMapper::toDto,
-                                   authorService.findAll(PageRequest.of(pageNo, pageSize,
-                                                                        Sort.by(sortDirection, sortField))));
+                authorService.findAll(PageRequest.of(pageNo, pageSize,
+                        Sort.by(sortDirection, sortField))));
     }
 
     @ApiOperation("Получить автора")

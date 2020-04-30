@@ -11,12 +11,12 @@ Author:
 
  3. Получение списка с фильтрацией
  GET /authors/list
- <-AuthorDto, Params
- =>AuthorDto
+ <-AuthorDto, pageNo, pageSize, sortField, sortDirection
+ =>CollectionDTO<AuthorDto>
  
  4. Обновление
 POST /authors/{id}/update
- <- id
+ <- id, UpdateAuthorDto
  => AuthorDto  or  NotFoundException
 
 5. Удаление
@@ -24,9 +24,21 @@ POST /authors/{id}/delete
 <- id
 =>200(OK)  or  NotFoundException
 
+CreateAuthorDto  {
+ String fullName;
+ Date dateOfBirth;
+ String nationality;
+ }
+ 
 AuthorDto  {
  Long id;
  String fullName;
  Date dateOfBirth;
  String nationality;
  }
+ 
+ UpdateAuthorDto  {
+  String fullName;
+  Date dateOfBirth;
+  String nationality;
+  }

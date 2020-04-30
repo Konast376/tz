@@ -27,7 +27,7 @@ public class Author {
     @Column(nullable = false)
     private String fullName;
 
-    @Column
+    @Column(nullable = false)
     private Date dateOfBirth;
 
     @Column

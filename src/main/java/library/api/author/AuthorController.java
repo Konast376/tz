@@ -9,21 +9,18 @@ import library.api.author.dto.AuthorDto;
 import library.api.author.dto.CreateAuthorDto;
 import library.api.author.dto.UpdateAuthorDto;
 import library.mapper.AuthorMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/authors")
 public class AuthorController {
     private final AuthorService authorService;
     private final AuthorMapper authorMapper;
-
-    public AuthorController(AuthorService authorService, AuthorMapper authorMapper) {
-        this.authorService = authorService;
-        this.authorMapper = authorMapper;
-    }
 
     @ApiOperation("Создать автора")
     @PostMapping("/create")
@@ -40,8 +37,8 @@ public class AuthorController {
                                                   @RequestParam Sort.Direction sortDirection) {
 
         return MapperUtils.mapPage(authorMapper::toDto,
-                authorService.findAll(PageRequest.of(pageNo, pageSize,
-                        Sort.by(sortDirection, sortField))));
+                                   authorService.findAll(PageRequest.of(pageNo, pageSize,
+                                                                        Sort.by(sortDirection, sortField))));
     }
 
     @ApiOperation("Получить автора")

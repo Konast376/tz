@@ -2,7 +2,7 @@ package library.service.book;
 
 import library.model.book.Book;
 import library.exception.NotFoundException;
-import library.repository.book.BookRepository;
+import library.repository.BookRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

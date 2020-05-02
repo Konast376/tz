@@ -38,14 +38,14 @@ public class AuthorControllerTest {
     @Mock
     AuthorServiceImpl service;
 
-    long id = 1L;
+    private final long id = 1L;
 
     @Test
     void create() {
         //arrange
-        CreateAuthorDto body = mock(CreateAuthorDto.class);
+        CreateAuthorDto createDto = mock(CreateAuthorDto.class);
         CreateAuthorArgument argument = mock(CreateAuthorArgument.class);
-        when(mapper.toCreateArgument(body)).thenReturn(argument);
+        when(mapper.toCreateArgument(createDto)).thenReturn(argument);
 
         Author savedAuthor = mock(Author.class);
         when(service.create(argument)).thenReturn(savedAuthor);
@@ -54,7 +54,7 @@ public class AuthorControllerTest {
         when(mapper.toDto(savedAuthor)).thenReturn(dto);
 
         //act
-        AuthorDto result = controller.create(body);
+        AuthorDto result = controller.create(createDto);
 
         //assert
         assertThat(result).isEqualTo(dto);
@@ -68,10 +68,10 @@ public class AuthorControllerTest {
         String sortField = "test sorting field";
         Sort.Direction sortDirection = Sort.Direction.DESC;
         Author author = mock(Author.class);
-        AuthorDto dto = mock(AuthorDto.class);
-
-        when(mapper.toDto(author)).thenReturn(dto);
         when(service.findAll(any())).thenReturn(new PageImpl<>(Lists.newArrayList(author)));
+
+        AuthorDto dto = mock(AuthorDto.class);
+        when(mapper.toDto(author)).thenReturn(dto);
 
         //act
         CollectionDTO<AuthorDto> result = controller.getAllAuthors(pageNo, pageSize, sortField, sortDirection);
@@ -84,9 +84,10 @@ public class AuthorControllerTest {
     @Test
     void get() {
         //arrange
-        AuthorDto dto = mock(AuthorDto.class);
         Author author = mock(Author.class);
         when(service.getExisting(id)).thenReturn(author);
+
+        AuthorDto dto = mock(AuthorDto.class);
         when(mapper.toDto(author)).thenReturn(dto);
 
         //act
@@ -99,18 +100,19 @@ public class AuthorControllerTest {
     @Test
     void update() {
         //arrange
-        UpdateAuthorDto body = mock(UpdateAuthorDto.class);
+
         UpdateAuthorArgument argument = mock(UpdateAuthorArgument.class);
-        Author update = mock(Author.class);
+        UpdateAuthorDto updateDto = mock(UpdateAuthorDto.class);
+        when(mapper.toUpdateArgument(updateDto)).thenReturn(argument);
+
+        Author updatedDto = mock(Author.class);
+        when(service.update(id, argument)).thenReturn(updatedDto);
+
         AuthorDto dto = mock(AuthorDto.class);
-
-        when(mapper.toUpdateArgument(body)).thenReturn(argument);
-
-        when(service.update(id, argument)).thenReturn(update);
-        when(mapper.toDto(update)).thenReturn(dto);
+        when(mapper.toDto(updatedDto)).thenReturn(dto);
 
         //act
-        AuthorDto result = controller.update(id, body);
+        AuthorDto result = controller.update(id, updateDto);
 
         //assert
         assertThat(result).isEqualTo(dto);

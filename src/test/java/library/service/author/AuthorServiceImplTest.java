@@ -4,7 +4,7 @@ import com.whitesoft.util.exceptions.WSArgumentException;
 import com.whitesoft.util.exceptions.WSNotFoundException;
 import library.errorInfo.AuthorErrorInfo;
 import library.model.author.Author;
-import library.repository.author.AuthorRepository;
+import library.repository.AuthorRepository;
 import library.service.author.argument.CreateAuthorArgument;
 import library.service.author.argument.UpdateAuthorArgument;
 import org.assertj.core.api.BDDSoftAssertions;
@@ -38,7 +38,7 @@ class AuthorServiceImplTest {
     @Mock
     AuthorRepository repository;
 
-    long id = 1L;
+    private final long id = 1L;
 
     @Test
     void create(BDDSoftAssertions softly) throws Exception {

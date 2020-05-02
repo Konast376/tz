@@ -2,11 +2,12 @@ package library.service.author.argument;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Value;
 
 import java.util.Date;
 
 @Builder
-@Getter
+@Value
 public class CreateAuthorArgument {
     //Полное имя автора
     private String fullName;

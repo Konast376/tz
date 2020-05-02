@@ -4,7 +4,7 @@ import com.whitesoft.util.Guard;
 import com.whitesoft.util.exceptions.WSNotFoundException;
 import library.errorInfo.AuthorErrorInfo;
 import library.model.author.Author;
-import library.repository.author.AuthorRepository;
+import library.repository.AuthorRepository;
 import library.service.author.argument.CreateAuthorArgument;
 import library.service.author.argument.UpdateAuthorArgument;
 import lombok.NonNull;

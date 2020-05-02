@@ -2,7 +2,7 @@ package library.service.book;
 
 import library.model.author.Author;
 import library.model.book.Book;
-import library.repository.book.BookRepository;
+import library.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

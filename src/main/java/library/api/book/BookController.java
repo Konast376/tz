@@ -6,6 +6,7 @@ import library.model.author.Author;
 import library.model.book.Book;
 import library.service.author.AuthorServiceImpl;
 import library.service.book.BookService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,17 +19,12 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/book")
 public class BookController {
     private final BookService bookService;
     private final AuthorServiceImpl authorService;
     private final BookMapper bookMapper;
-
-    public BookController(BookService bookService, AuthorServiceImpl authorServiceImpl, BookMapper bookMapper) {
-        this.bookService = bookService;
-        this.authorService = authorServiceImpl;
-        this.bookMapper = bookMapper;
-    }
 
     @PostMapping("/create")
     public BookDto create(@RequestBody BookDto bookDto) {

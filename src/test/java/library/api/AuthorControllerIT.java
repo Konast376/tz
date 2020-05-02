@@ -27,7 +27,7 @@ public class AuthorControllerIT {
     @Autowired
     private WebTestClient client;
 
-    long id = 1L;
+    private final long id = 1L;
     final AuthorDto expectedDto = AuthorDto.builder()
                                            .id(1L)
                                            .fullName("full name")

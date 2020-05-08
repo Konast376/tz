@@ -7,6 +7,7 @@ import com.whitesoft.api.dto.CollectionDTO;
 import library.api.book.dto.BookDto;
 import library.api.book.dto.CreateBookDto;
 import library.api.book.dto.UpdateBookDto;
+import library.model.author.Author;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,10 @@ public class BookControllerIT {
 
     @Autowired
     private WebTestClient client;
-
+    Author author;
     private final long id = 1L;
-    final BookDto expectedDto = BookDto.builder()
-                                       .id(1L)
+    final CreateBookDto expectedDto = CreateBookDto.builder()
+                                       .author(author)
                                        .bookName("bookName")
                                        .numberOfPages(120)
                                        .publicationYear(1970)

@@ -14,20 +14,24 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Books")
+@Table(name = "book")
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true)
-    private Long id;
+    private Long bookId;
+
     @Column(nullable = false)
     private String bookName;
+
     @Column(nullable = false)
     private int numberOfPages;
+
     @Column(nullable = false)
-    private Date publicationYear;
+    private int publicationYear;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "author_id", nullable = false)
     private Author author;
 }
 

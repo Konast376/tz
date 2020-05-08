@@ -1,70 +1,61 @@
 package library.api.book;
 
+import com.whitesoft.api.dto.CollectionDTO;
+import com.whitesoft.api.mappers.MapperUtils;
+import io.swagger.annotations.ApiOperation;
 import library.api.book.dto.BookDto;
+import library.api.book.dto.CreateBookDto;
+import library.api.book.dto.UpdateBookDto;
 import library.mapper.BookMapper;
-import library.model.author.Author;
-import library.model.book.Book;
-import library.service.author.AuthorServiceImpl;
-import library.service.book.BookService;
+import library.service.book.BookServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/book")
+@RequestMapping("/books")
 public class BookController {
-    private final BookService bookService;
-    private final AuthorServiceImpl authorService;
+    private final BookServiceImpl bookService;
     private final BookMapper bookMapper;
 
+    @ApiOperation("Создать книгу")
     @PostMapping("/create")
-    public BookDto create(@RequestBody BookDto bookDto) {
-        Book book = bookMapper.bookDtoToBook(bookDto);
-        return bookMapper.bookToBookDto(bookService.createBook(book));
+    @ResponseStatus(HttpStatus.CREATED)
+    public BookDto create(@RequestBody CreateBookDto body) {
+        return bookMapper.toDto(bookService.create(bookMapper.toCreateArgument(body)));
     }
 
+    @ApiOperation("Получить пейджинированный список книг")
     @GetMapping("/list")
-    public List<BookDto> listAll(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Book> books = bookService.listAll(pageable);
-        List<BookDto> result = new ArrayList<>();
-        for (Book book : books.getContent()) {
-            result.add(bookMapper.bookToBookDto(book));
-        }
-        return result;
+    public CollectionDTO<BookDto> getAllAuthors(@RequestParam(name = "pageNo") int pageNo,
+                                                @RequestParam(name = "pageSize") int pageSize,
+                                                @RequestParam String sortField,
+                                                @RequestParam Sort.Direction sortDirection) {
+
+        return MapperUtils.mapPage(bookMapper::toDto,
+                                   bookService.findAll(PageRequest.of(pageNo, pageSize,
+                                                                      Sort.by(sortDirection, sortField))));
     }
 
-    @GetMapping("/get")
-    public BookDto get(@RequestParam Long id) {
-        return bookMapper.bookToBookDto(bookService.findById(id));
+    @ApiOperation("Получить книгу")
+    @GetMapping("/{id}")
+    public BookDto get(@PathVariable Long id) {
+        return bookMapper.toDto(bookService.getExisting(id));
     }
 
-    @GetMapping("/authorBooks")
-    public Set<BookDto> findAuthorBooks(@RequestParam Long id) {
-        Author author = authorService.getExisting(id);
-        Set<BookDto> result = new HashSet<>();
-        for (Book book : author.getBooks()) {
-            result.add(bookMapper.bookToBookDto(book));
-        }
-        return result;
+    @ApiOperation("Обновить книгу")
+    @PostMapping("/{id}/update")
+    public BookDto update(@PathVariable Long id,
+                          @RequestBody UpdateBookDto body) {
+        return bookMapper.toDto(bookService.update(id, bookMapper.toUpdateArgument(body)));
     }
 
-    @GetMapping("/update")
-    public BookDto updateBook(@RequestBody BookDto bookDto) {
-        Book book = bookMapper.bookDtoToBook(bookDto);
-        return bookMapper.bookToBookDto(bookService.updateBook(book));
-    }
-
-    @PostMapping("/delete")
-    public void delete(@RequestParam Long id) {
-        bookService.deleteById(id);
+    @ApiOperation("Удалить книгу")
+    @PostMapping("/{id}/delete")
+    public void delete(@PathVariable Long id) {
+        bookService.delete(id);
     }
 }

@@ -1,4 +1,4 @@
-package library.service.book.argument;
+package library.api.book.dto;
 
 import library.model.author.Author;
 import lombok.Builder;
@@ -6,16 +6,9 @@ import lombok.Value;
 
 @Builder
 @Value
-public class CreateBookArgument {
-    //Название книги
+public class UpdateBookDto {
     private String bookName;
-
-    //Количество страниц
     private int numberOfPages;
-
-    //Год публикации
     private int publicationYear;
-
-    //Автор
     private Author author;
 }

@@ -6,7 +6,7 @@ import lombok.Value;
 
 @Builder
 @Value
-public class CreateBookArgument {
+public class UpdateBookArgument {
     //Название книги
     private String bookName;
 

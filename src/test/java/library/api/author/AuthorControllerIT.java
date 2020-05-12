@@ -1,4 +1,4 @@
-package library.api;
+package library.api.author;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
@@ -137,8 +137,7 @@ public class AuthorControllerIT {
                                                 // Assert
                                                 .expectStatus()
                                                 .isOk()
-                                                .expectBody(new ParameterizedTypeReference<CollectionDTO<AuthorDto>>() {
-                                                })
+                                                .expectBody(new ParameterizedTypeReference<CollectionDTO<AuthorDto>>() {})
                                                 .returnResult().getResponseBody();
         Assertions.assertThat(result.getTotalCount()).isEqualTo(1);
         assertThat(result.getItems().get(0)).isEqualTo(expectedDto);
@@ -158,4 +157,3 @@ public class AuthorControllerIT {
               .isOk();
     }
 }
-

@@ -8,12 +8,12 @@ import java.util.Date;
 @Value
 @Builder
 public class UpdateAuthorArgument {
-    //Полное имя автора
+    // Полное имя автора
     private String fullName;
 
-    //Дата  рождения автора
+    // Дата  рождения автора
     private Date dateOfBirth;
 
-    //Национальность
+    // Национальность
     private String nationality;
 }

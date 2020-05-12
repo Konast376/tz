@@ -13,4 +13,5 @@ public enum AuthorErrorInfo implements ErrorInfo {
     NOT_FOUND("Автор не найден");
 
     private final int code = ordinal() + 100;
-    private final String message;}
+    private final String message;
+}

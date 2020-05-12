@@ -1,4 +1,4 @@
-package library.api;
+package library.api.author;
 
 import com.whitesoft.api.dto.CollectionDTO;
 import library.api.author.AuthorController;

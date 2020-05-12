@@ -7,15 +7,15 @@ import lombok.Value;
 @Builder
 @Value
 public class CreateBookArgument {
-    //Название книги
+    // Название книги
     private String bookName;
 
-    //Количество страниц
+    // Количество страниц
     private int numberOfPages;
 
-    //Год публикации
+    // Год публикации
     private int publicationYear;
 
-    //Автор
+    // Автор
     private Author author;
 }

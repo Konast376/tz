@@ -11,18 +11,16 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "author")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true)
-    private Long id;
+    private Long authorId;
 
     @Column(nullable = false)
     private String fullName;

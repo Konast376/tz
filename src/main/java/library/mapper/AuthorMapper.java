@@ -10,9 +10,9 @@ import org.mapstruct.Mapper;
 
 @Mapper
 public interface AuthorMapper {
-  CreateAuthorArgument toCreateArgument (CreateAuthorDto dto);
+    CreateAuthorArgument toCreateArgument(CreateAuthorDto dto);
 
-  AuthorDto toDto(Author author);
+    AuthorDto toDto(Author author);
 
-  UpdateAuthorArgument toUpdateArgument (UpdateAuthorDto dto);
+    UpdateAuthorArgument toUpdateArgument(UpdateAuthorDto dto);
 }

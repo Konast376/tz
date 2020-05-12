@@ -60,7 +60,7 @@ class AuthorServiceImplTest {
         verify(repository).save(authorCaptor.capture());
         Author authorCaptorValue = authorCaptor.getValue();
 
-        softly.then(authorCaptorValue.getId()).isNull();
+        softly.then(authorCaptorValue.getAuthorId()).isNull();
         softly.then(authorCaptorValue.getFullName()).isEqualTo(argument.getFullName());
         softly.then(authorCaptorValue.getDateOfBirth()).isEqualTo(argument.getDateOfBirth());
         softly.then(authorCaptorValue.getNationality()).isEqualTo(argument.getNationality());

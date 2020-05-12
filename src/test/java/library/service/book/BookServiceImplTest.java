@@ -66,7 +66,7 @@ class BookServiceImplTest {
         verify(repository).save(bookCaptor.capture());
         Book bookCaptorValue = bookCaptor.getValue();
 
-        softly.then(bookCaptorValue.getId()).isNull();
+        softly.then(bookCaptorValue.getBookId()).isNull();
         softly.then(bookCaptorValue.getBookName()).isEqualTo(argument.getBookName());
         softly.then(bookCaptorValue.getNumberOfPages()).isEqualTo(argument.getNumberOfPages());
         softly.then(bookCaptorValue.getPublicationYear()).isEqualTo(argument.getPublicationYear());

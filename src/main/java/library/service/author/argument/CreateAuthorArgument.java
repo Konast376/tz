@@ -9,12 +9,12 @@ import java.util.Date;
 @Builder
 @Value
 public class CreateAuthorArgument {
-    //Полное имя автора
+    // Полное имя автора
     private String fullName;
 
-    //Дата  рождения автора
+    // Дата  рождения автора
     private Date dateOfBirth;
 
-    //Национальность
+    // Национальность
     private String nationality;
 }

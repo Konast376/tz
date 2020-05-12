@@ -7,7 +7,7 @@ import library.api.book.dto.BookDto;
 import library.api.book.dto.CreateBookDto;
 import library.api.book.dto.UpdateBookDto;
 import library.mapper.BookMapper;
-import library.service.book.BookServiceImpl;
+import library.service.book.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/books")
 public class BookController {
-    private final BookServiceImpl bookService;
+    private final BookService bookService;
     private final BookMapper bookMapper;
 
     @ApiOperation("Создать книгу")

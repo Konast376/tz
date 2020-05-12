@@ -25,7 +25,7 @@ public class BookControllerIT {
 
     @Autowired
     private WebTestClient client;
-    Author author;
+
     private final long id = 1L;
     final BookDto expectedDto = BookDto.builder()
                                        .id(id)
@@ -85,7 +85,6 @@ public class BookControllerIT {
                                .returnResult()
                                .getResponseBody();
         assertThat(result).isEqualTo(expectedDto);
-        assertThat(result.getId()).isNotNull();
     }
 
     @Test
@@ -125,7 +124,7 @@ public class BookControllerIT {
     void list() throws Exception {
         // Act
         CollectionDTO<BookDto> result = client.get().uri(uriBuilder -> uriBuilder.path("/books/list")
-                                                                                 .queryParam("pageNo", 0)
+                                                                                 .queryParam("pageNo", 1)
                                                                                  .queryParam("pageSize", 1)
                                                                                  .queryParam("sortField", "id")
                                                                                  .queryParam("sortDirection", "DESC")

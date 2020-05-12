@@ -10,5 +10,4 @@ public class UpdateBookDto {
     private String bookName;
     private int numberOfPages;
     private int publicationYear;
-    private Author author;
 }

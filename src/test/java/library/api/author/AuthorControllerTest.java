@@ -18,12 +18,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.testcontainers.shaded.com.google.common.collect.Lists;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 
 @ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
@@ -61,24 +63,24 @@ public class AuthorControllerTest {
     }
 
     @Test
-    void getAllAuthors() {
+    void getAll() {
         //arrange
         int pageNo = 1;
         int pageSize = 1;
         String sortField = "test sorting field";
-        Sort.Direction sortDirection = Sort.Direction.DESC;
+        Sort.Direction sortDirection = DESC;
         Author author = mock(Author.class);
-        when(service.findAll(any())).thenReturn(new PageImpl<>(Lists.newArrayList(author)));
+        when(service.getAll(any())).thenReturn(new PageImpl<>(Lists.newArrayList(author)));
 
         AuthorDto dto = mock(AuthorDto.class);
         when(mapper.toDto(author)).thenReturn(dto);
 
         //act
-        CollectionDTO<AuthorDto> result = controller.getAllAuthors(pageNo, pageSize, sortField, sortDirection);
+        CollectionDTO<AuthorDto> result = controller.getAll(pageNo, pageSize, sortField, sortDirection);
 
         //assert
+        verify(service).getAll((PageRequest.of(pageNo, pageSize,sortDirection,sortField)));
         Assertions.assertThat(result.getItems()).containsOnly(dto);
-        verifyNoMoreInteractions(mapper, service);
     }
 
     @Test
@@ -116,8 +118,6 @@ public class AuthorControllerTest {
 
         //assert
         assertThat(result).isEqualTo(dto);
-
-        verifyNoMoreInteractions(dto);
     }
 
     @Test

@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 public interface AuthorService {
     Author create(@NonNull CreateAuthorArgument argument);
 
-    Page<Author> findAll(@NonNull Pageable pageable);
+    Page<Author> getAll(@NonNull Pageable pageable);
 
     Author getExisting(@NonNull Long id);
 

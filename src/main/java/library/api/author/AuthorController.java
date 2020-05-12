@@ -31,13 +31,13 @@ public class AuthorController {
 
     @ApiOperation("Получить пейджинированный список авторов")
     @GetMapping("/list")
-    public CollectionDTO<AuthorDto> getAllAuthors(@RequestParam(name = "pageNo") int pageNo,
+    public CollectionDTO<AuthorDto> getAll(@RequestParam(name = "pageNo") int pageNo,
                                                   @RequestParam(name = "pageSize") int pageSize,
                                                   @RequestParam String sortField,
                                                   @RequestParam Sort.Direction sortDirection) {
 
         return MapperUtils.mapPage(authorMapper::toDto,
-                                   authorService.findAll(PageRequest.of(pageNo, pageSize,
+                                   authorService.getAll(PageRequest.of(pageNo, pageSize,
                                                                         Sort.by(sortDirection, sortField))));
     }
 

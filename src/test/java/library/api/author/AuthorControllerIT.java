@@ -29,7 +29,7 @@ public class AuthorControllerIT {
 
     private final long id = 1L;
     final AuthorDto expectedDto = AuthorDto.builder()
-                                           .id(1L)
+                                           .id(id)
                                            .fullName("full name")
                                            .dateOfBirth(Timestamp.valueOf("2019-05-20 21:15:30.0"))
                                            .nationality("nationality")
@@ -58,8 +58,7 @@ public class AuthorControllerIT {
                                  .returnResult()
                                  .getResponseBody();
 
-        assertThat(result).isEqualTo(expectedDto);
-        assertThat(result.getId()).isNotNull();
+        assertThat(result).isEqualToComparingFieldByField(expectedDto);
     }
 
     @Test
@@ -126,7 +125,7 @@ public class AuthorControllerIT {
     void list() throws Exception {
         // Act
         CollectionDTO<AuthorDto> result = client.get().uri(uriBuilder -> uriBuilder.path("/authors/list")
-                                                                                   .queryParam("pageNo", 0)
+                                                                                   .queryParam("pageNo", 1)
                                                                                    .queryParam("pageSize", 1)
                                                                                    .queryParam("sortField", "id")
                                                                                    .queryParam("sortDirection", "DESC")
@@ -139,8 +138,8 @@ public class AuthorControllerIT {
                                                 .isOk()
                                                 .expectBody(new ParameterizedTypeReference<CollectionDTO<AuthorDto>>() {})
                                                 .returnResult().getResponseBody();
-        Assertions.assertThat(result.getTotalCount()).isEqualTo(1);
-        assertThat(result.getItems().get(0)).isEqualTo(expectedDto);
+        Assertions.assertThat(result.getTotalCount()).isEqualTo(2);
+        assertThat(result.getItems().get(0)).isEqualToIgnoringGivenFields(expectedDto, "id");
     }
 
     @Test

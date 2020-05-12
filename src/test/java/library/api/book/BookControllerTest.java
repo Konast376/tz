@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.testcontainers.shaded.com.google.common.collect.Lists;
 
@@ -59,24 +60,24 @@ public class BookControllerTest {
     }
 
     @Test
-    void getAllBooks() {
+    void getAll() {
         //Arrange
         int pageNo = 1;
         int pageSize = 1;
         String sortField = "test sorting field";
         Sort.Direction sortDirection = Sort.Direction.DESC;
         Book book = mock(Book.class);
-        when(service.findAll(any())).thenReturn(new PageImpl<>(Lists.newArrayList(book)));
+        when(service.getAll(any())).thenReturn(new PageImpl<>(Lists.newArrayList(book)));
 
         BookDto dto = mock(BookDto.class);
         when(mapper.toDto(book)).thenReturn(dto);
 
         //Act
-        CollectionDTO<BookDto> result = controller.getAllAuthors(pageNo, pageSize, sortField, sortDirection);
+        CollectionDTO<BookDto> result = controller.getAll(pageNo, pageSize, sortField, sortDirection);
 
         //Assert
+        verify(service).getAll(refEq(PageRequest.of(pageNo, pageSize, sortDirection, sortField)));
         Assertions.assertThat(result.getItems()).containsOnly(dto);
-        verifyNoMoreInteractions(mapper, service);
     }
 
     @Test
@@ -113,8 +114,6 @@ public class BookControllerTest {
 
         //Assert
         assertThat(result).isEqualTo(dto);
-
-        verifyNoMoreInteractions(dto);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package library.service.author;
 
+import com.querydsl.core.types.Predicate;
 import com.whitesoft.util.exceptions.WSArgumentException;
 import com.whitesoft.util.exceptions.WSNotFoundException;
 import library.errorInfo.AuthorErrorInfo;
@@ -7,6 +8,7 @@ import library.model.author.Author;
 import library.repository.AuthorRepository;
 import library.service.author.argument.CreateAuthorArgument;
 import library.service.author.argument.UpdateAuthorArgument;
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,9 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.Date;
 import java.util.Optional;
@@ -26,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
 class AuthorServiceImplTest {
@@ -39,6 +44,10 @@ class AuthorServiceImplTest {
     AuthorRepository repository;
 
     private final long id = 1L;
+    private final int pageNo = 1;
+    private final int pageSize = 1;
+    private final String sortField = "test sorting field";
+    private final Sort.Direction sortDirection = DESC;
 
     @Test
     void create(BDDSoftAssertions softly) throws Exception {
@@ -60,11 +69,10 @@ class AuthorServiceImplTest {
         verify(repository).save(authorCaptor.capture());
         Author authorCaptorValue = authorCaptor.getValue();
 
-        softly.then(authorCaptorValue.getAuthorId()).isNull();
+        softly.then(authorCaptorValue.getId()).isNull();
         softly.then(authorCaptorValue.getFullName()).isEqualTo(argument.getFullName());
         softly.then(authorCaptorValue.getDateOfBirth()).isEqualTo(argument.getDateOfBirth());
         softly.then(authorCaptorValue.getNationality()).isEqualTo(argument.getNationality());
-        softly.then(authorCaptorValue.getBooks()).isEmpty();
 
         verifyNoMoreInteractions(repository);
     }
@@ -129,15 +137,17 @@ class AuthorServiceImplTest {
 
 
     @Test
-    void findAll() {
+    void getAll() {
         //Arrange
         Pageable pageable = mock(Pageable.class);
+        Page<Author> page = mock(Page.class);
+        when(repository.findAll(any(Pageable.class))).thenReturn(page);
 
         //Act
-        service.findAll(pageable);
+        Page<Author> result = service.getAll(pageable);
 
         //Assert
-        verify(repository).findAll(pageable);
+        Assertions.assertThat(result).isSameAs(page);
     }
 
     @Test
@@ -159,8 +169,13 @@ class AuthorServiceImplTest {
         when(repository.findById(id)).thenReturn(Optional.empty());
 
         //Act
-        assertThrows(WSNotFoundException.class,
-                     () -> service.getExisting(id));
+        guardCheck(() -> service.getExisting(id),
+
+                   //Assert
+                   WSArgumentException.class,
+                   AuthorErrorInfo.NOT_FOUND);
+
+        verifyNoInteractions(repository);
     }
 
     @Test
@@ -260,13 +275,26 @@ class AuthorServiceImplTest {
 
         verifyNoInteractions(repository);
     }
+    @Test
+    void deleteWhenIdNull() throws Exception {
+        // Act
+        assertThrows(NullPointerException.class,
+                     () -> service.delete(null));
+
+                   //Assert
+        verifyNoInteractions(repository);
+    }
 
     @Test
     void delete() {
+        //Arrange
+        Author author = mock(Author.class);
+        when(repository.findById(id)).thenReturn(Optional.of(author));
+
         //Act
         service.delete(id);
 
         //Assert
-        verify(repository).deleteById(id);
+        verify(repository).delete(author);
     }
 }

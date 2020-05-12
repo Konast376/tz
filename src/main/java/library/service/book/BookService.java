@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 public interface BookService {
      Book create(@NonNull CreateBookArgument argument);
 
-     Page<Book> findAll(@NonNull Pageable pageable);
+     Page<Book> getAll(@NonNull Pageable pageable);
 
      Book getExisting(@NonNull Long id);
 

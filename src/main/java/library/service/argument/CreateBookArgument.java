@@ -1,6 +1,6 @@
 package library.service.argument;
 
-import library.entity.Author;
+import library.model.author.Author;
 import lombok.Getter;
 
 import java.util.Date;

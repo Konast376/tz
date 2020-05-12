@@ -9,7 +9,7 @@ import library.api.book.dto.CreateBookDto;
 import library.api.book.dto.UpdateBookDto;
 import library.mapper.BookMapper;
 import library.model.book.Book;
-import library.service.book.BookServiceImpl;
+import library.service.book.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/books")
 public class BookController {
-    private final BookServiceImpl bookService;
+    private final BookService bookService;
     private final BookMapper bookMapper;
     private final Action<Book> createBookAction;
 
@@ -33,13 +33,13 @@ public class BookController {
 
     @ApiOperation("Получить пейджинированный список книг")
     @GetMapping("/list")
-    public CollectionDTO<BookDto> getAllAuthors(@RequestParam(name = "pageNo") int pageNo,
+    public CollectionDTO<BookDto> getAll(@RequestParam(name = "pageNo") int pageNo,
                                                 @RequestParam(name = "pageSize") int pageSize,
                                                 @RequestParam String sortField,
                                                 @RequestParam Sort.Direction sortDirection) {
 
         return MapperUtils.mapPage(bookMapper::toDto,
-                                   bookService.findAll(PageRequest.of(pageNo, pageSize,
+                                   bookService.getAll(PageRequest.of(pageNo, pageSize,
                                                                       Sort.by(sortDirection, sortField))));
     }
 

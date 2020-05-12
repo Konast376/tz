@@ -37,7 +37,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Book> findAll(@NonNull Pageable pageable) {
+    public Page<Book> getAll(@NonNull Pageable pageable) {
         return bookRepository.findAll(pageable);
     }
 

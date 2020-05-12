@@ -36,7 +36,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Author> findAll(@NonNull Pageable pageable) {
+    public Page<Author> getAll(@NonNull Pageable pageable) {
         return authorRepository.findAll(pageable);
     }
 
@@ -51,7 +51,6 @@ public class AuthorServiceImpl implements AuthorService {
         Guard.checkArgumentExists(trimToNull(argument.getFullName()), AuthorErrorInfo.FULLNAME_IS_MANDATORY);
         Guard.checkArgumentExists(argument.getDateOfBirth(), AuthorErrorInfo.DATE_OF_BIRTH_IS_MANDATORY);
 
-
         Author author = getExisting(id);
 
         author.setFullName(argument.getFullName());
@@ -63,7 +62,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional(isolation = SERIALIZABLE)
     public void delete(@NonNull Long id) {
-        authorRepository.deleteById(id);
+        Guard.checkArgumentExists(id, AuthorErrorInfo.NOT_FOUND);
+        Author author = getExisting(id);
+        authorRepository.delete(author);
     }
 }
 

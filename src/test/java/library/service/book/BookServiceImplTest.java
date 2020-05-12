@@ -122,7 +122,7 @@ class BookServiceImplTest {
         Pageable pageable = mock(Pageable.class);
 
         //Act
-        service.findAll(pageable);
+        service.getAll(pageable);
 
         //Assert
         verify(repository).findAll(pageable);

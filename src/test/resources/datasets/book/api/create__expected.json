@@ -1,0 +1,19 @@
+{
+  "author": [
+    {
+      "id": 1,
+      "full_name": "full name",
+      "date_of_birth": "1970-01-01 10:00:00.001",
+      "nationality": "nationality"
+    }
+  ],
+  "books": [
+    {
+      "id": 1,
+      "author_id": 1,
+      "book_name": "book name",
+      "number_of_pages": 1,
+      "publication_year": "1970-01-01 10:00:00.000"
+    }
+  ]
+}

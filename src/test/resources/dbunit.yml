@@ -1,0 +1,10 @@
+cacheConnection: true
+cacheTableNames: true
+mergeDataSets: false
+caseInsensitiveStrategy: 'UPPERCASE'
+properties:
+  batchedStatements:  true
+  qualifiedTableNames: false
+  caseSensitiveTableNames: false
+  batchSize: 100
+  fetchSize: 100

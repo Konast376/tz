@@ -19,20 +19,12 @@ public class CreateBookAction extends BaseAction<Book, CreateBookActionArgument>
     protected Book executeImpl(CreateBookActionArgument argument) {
         Author author = authorService.getExisting(argument.getAuthorId());
 
-        Book book = bookService.create(CreateBookArgument.builder()
-                                             .author(author)
-                                             .build());
-
-        try {
-            return bookService.create(CreateBookArgument.builder()
-                                                        .bookName(book.getBookName())
-                                                        .numberOfPages(book.getNumberOfPages())
-                                                        .publicationYear(book.getPublicationYear())
-                                                        .author(book.getAuthor())
-                                                        .build());
-        } catch (Exception exception) {
-            throw exception;
-        }
+        return bookService.create(CreateBookArgument.builder()
+                                                    .bookName(argument.getBookName())
+                                                    .numberOfPages(argument.getNumberOfPages())
+                                                    .publicationYear(argument.getPublicationYear())
+                                                    .author(author)
+                                                    .build());
     }
 }
 

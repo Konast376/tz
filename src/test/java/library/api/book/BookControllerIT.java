@@ -27,15 +27,15 @@ public class BookControllerIT {
     private WebTestClient client;
     Author author;
     private final long id = 1L;
-    final CreateBookDto expectedDto = CreateBookDto.builder()
-                                       .author(author)
+    final BookDto expectedDto = BookDto.builder()
+                                       .id(id)
                                        .bookName("bookName")
                                        .numberOfPages(120)
                                        .publicationYear(1970)
                                        .build();
 
     @Test
-    @DataSet(value = "/datasets/book/api/empty.json", cleanAfter = true, cleanBefore = true)
+    @DataSet(value = "/datasets/book/api/create.json", cleanAfter = true, cleanBefore = true)
     @ExpectedDataSet("datasets/book/api/create__expected.json")
     void create() throws Exception {
         //Arrange
@@ -43,7 +43,9 @@ public class BookControllerIT {
                                              .bookName("bookName")
                                              .numberOfPages(120)
                                              .publicationYear(1970)
+                                             .authorId(1L)
                                              .build();
+
         //Act
         BookDto result = client.post()
                                .uri("/books/create")
@@ -56,8 +58,8 @@ public class BookControllerIT {
                                .expectBody(BookDto.class)
                                .returnResult()
                                .getResponseBody();
-        assertThat(result).isEqualTo(expectedDto);
-        assertThat(result.getId()).isNotNull();
+
+        assertThat(result).isEqualToComparingFieldByField(expectedDto);
     }
 
     @Test

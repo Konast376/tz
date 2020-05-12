@@ -10,5 +10,5 @@ public class CreateBookDto {
     private String bookName;
     private int numberOfPages;
     private int publicationYear;
-    private Author author;
+    private Long authorId;
 }

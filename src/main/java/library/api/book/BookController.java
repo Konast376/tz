@@ -2,12 +2,14 @@ package library.api.book;
 
 import com.whitesoft.api.dto.CollectionDTO;
 import com.whitesoft.api.mappers.MapperUtils;
+import com.whitesoft.util.actions.Action;
 import io.swagger.annotations.ApiOperation;
 import library.api.book.dto.BookDto;
 import library.api.book.dto.CreateBookDto;
 import library.api.book.dto.UpdateBookDto;
 import library.mapper.BookMapper;
-import library.service.book.BookService;
+import library.model.book.Book;
+import library.service.book.BookServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,14 +20,15 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/books")
 public class BookController {
-    private final BookService bookService;
+    private final BookServiceImpl bookService;
     private final BookMapper bookMapper;
+    private final Action<Book> createBookAction;
 
     @ApiOperation("Создать книгу")
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public BookDto create(@RequestBody CreateBookDto body) {
-        return bookMapper.toDto(bookService.create(bookMapper.toCreateArgument(body)));
+        return bookMapper.toDto(createBookAction.execute(bookMapper.toCreateDto(body)));
     }
 
     @ApiOperation("Получить пейджинированный список книг")

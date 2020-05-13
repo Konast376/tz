@@ -1,6 +1,5 @@
 package library.service.author;
 
-import com.querydsl.core.types.Predicate;
 import com.whitesoft.util.exceptions.WSArgumentException;
 import com.whitesoft.util.exceptions.WSNotFoundException;
 import library.errorInfo.AuthorErrorInfo;
@@ -174,8 +173,6 @@ class AuthorServiceImplTest {
                    //Assert
                    WSNotFoundException.class,
                    AuthorErrorInfo.NOT_FOUND);
-
-        verifyNoInteractions(repository);
     }
 
     @Test
@@ -275,32 +272,29 @@ class AuthorServiceImplTest {
 
         verifyNoInteractions(repository);
     }
+
     @Test
     void deleteWhenIdNull() throws Exception {
         // Act
         assertThrows(NullPointerException.class,
                      () -> service.delete(null));
 
-                   //Assert
+        //Assert
         verifyNoInteractions(repository);
     }
 
     @Test
     void deleteWhenNotExists() {
         //Arrange
-        Author author = mock(Author.class);
-        when(repository.findById(any())).thenReturn(Optional.empty());
+
+        when(repository.findById(id)).thenReturn(Optional.empty());
 
         //Act
-        guardCheck(() -> service.getExisting(id),
+        guardCheck(() -> service.delete(id),
 
                    //Assert
                    WSNotFoundException.class,
                    AuthorErrorInfo.NOT_FOUND);
-
-        verify(repository).findById(id);
-        verify(repository).delete(author);
-        verifyNoInteractions(repository);
     }
 
     @Test

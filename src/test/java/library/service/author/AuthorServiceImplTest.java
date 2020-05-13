@@ -163,7 +163,7 @@ class AuthorServiceImplTest {
     }
 
     @Test
-    void getWhenNotExists() {
+    void getExistingWhenNotExists() {
         //Arrange
         when(repository.findById(id)).thenReturn(Optional.empty());
 
@@ -173,6 +173,10 @@ class AuthorServiceImplTest {
                    //Assert
                    WSNotFoundException.class,
                    AuthorErrorInfo.NOT_FOUND);
+
+        verify(repository).findById(id);
+
+        verifyNoMoreInteractions(repository);
     }
 
     @Test
@@ -286,8 +290,7 @@ class AuthorServiceImplTest {
     @Test
     void deleteWhenNotExists() {
         //Arrange
-
-        when(repository.findById(id)).thenReturn(Optional.empty());
+        when(repository.findById(any())).thenReturn(Optional.empty());
 
         //Act
         guardCheck(() -> service.delete(id),
@@ -295,6 +298,10 @@ class AuthorServiceImplTest {
                    //Assert
                    WSNotFoundException.class,
                    AuthorErrorInfo.NOT_FOUND);
+
+        verify(repository).findById(id);
+
+        verifyNoMoreInteractions(repository);
     }
 
     @Test

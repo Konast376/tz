@@ -142,94 +142,128 @@ class BookServiceImplTest {
     }
 
     @Test
-    void update(BDDSoftAssertions softly) {
-        //Arrange
-        UpdateBookArgument argument = mock(UpdateBookArgument.class);
-        when(argument.getBookName()).thenReturn("bookName");
-        when(argument.getNumberOfPages()).thenReturn(120);
-        when(argument.getPublicationYear()).thenReturn(1976);
+    void getWhenNotExists() {
+            //Arrange
+            when(repository.findById(id)).thenReturn(Optional.empty());
 
-        Book book = mock(Book.class);
-        when(repository.findById(id)).thenReturn(Optional.of(book));
+            //Act
+            guardCheck(() -> service.getExisting(id),
 
-        Book savedBook = mock(Book.class);
-        when(repository.save(any())).thenReturn(savedBook);
+                       //Assert
+                       WSNotFoundException.class,
+                       BookErrorInfo.NOT_FOUND);
 
-        //Act
-        Book result = service.update(id, argument);
+            verify(repository).findById(id);
 
-        // Assert
-        assertThat(result).isEqualTo(savedBook);
-        verify(repository).save(bookCaptor.capture());
+            verifyNoMoreInteractions(repository);
+        }
 
-        verify(book).setBookName(argument.getBookName());
-        verify(book).setNumberOfPages(argument.getNumberOfPages());
-        verify(book).setPublicationYear(argument.getPublicationYear());
+        @Test
+        void update () {
+            //Arrange
+            UpdateBookArgument argument = mock(UpdateBookArgument.class);
+            when(argument.getBookName()).thenReturn("bookName");
+            when(argument.getNumberOfPages()).thenReturn(120);
+            when(argument.getPublicationYear()).thenReturn(1976);
 
-        verifyNoMoreInteractions(repository);
+            Book book = mock(Book.class);
+            when(repository.findById(id)).thenReturn(Optional.of(book));
+
+            Book savedBook = mock(Book.class);
+            when(repository.save(any())).thenReturn(savedBook);
+
+            //Act
+            Book result = service.update(id, argument);
+
+            // Assert
+            assertThat(result).isEqualTo(savedBook);
+            verify(repository).save(bookCaptor.capture());
+
+            verify(book).setBookName(argument.getBookName());
+            verify(book).setNumberOfPages(argument.getNumberOfPages());
+            verify(book).setPublicationYear(argument.getPublicationYear());
+
+            verifyNoMoreInteractions(repository);
+        }
+
+        @Test
+        void updateWhenArgumentNull () throws Exception {
+            // Act
+            assertThrows(NullPointerException.class,
+                         () -> service.update(id, null));
+
+            verifyNoInteractions(repository);
+        }
+
+        @Test
+        void updateWhenBookNameNull () throws Exception {
+            //Arrange
+            UpdateBookArgument argument = mock(UpdateBookArgument.class);
+            when(argument.getBookName()).thenReturn(null);
+
+            // Act
+            guardCheck(() -> service.update(id, argument),
+
+                       //Assert
+                       WSArgumentException.class,
+                       BookErrorInfo.BOOK_NAME_IS_MANDATORY);
+
+            verifyNoInteractions(repository);
+        }
+
+        @Test
+        void updateWhenFullNameBlank () throws Exception {
+            //Arrange
+            CreateBookArgument argument = mock(CreateBookArgument.class);
+            when(argument.getBookName()).thenReturn("    ");
+
+            // Act
+            guardCheck(() -> service.create(argument),
+
+                       //Assert
+                       WSArgumentException.class,
+                       BookErrorInfo.BOOK_NAME_IS_MANDATORY);
+
+            verifyNoInteractions(repository);
+        }
+
+        @Test
+        void deleteWhenIdNull () throws Exception {
+            // Act
+            assertThrows(NullPointerException.class,
+                         () -> service.delete(null));
+
+            //Assert
+            verifyNoInteractions(repository);
+        }
+
+        @Test
+        void deleteWhenNotExists () {
+            //Arrange
+            when(repository.findById(any())).thenReturn(Optional.empty());
+
+            //Act
+            guardCheck(() -> service.delete(id),
+
+                       //Assert
+                       WSNotFoundException.class,
+                       BookErrorInfo.NOT_FOUND);
+
+            verify(repository).findById(id);
+
+            verifyNoMoreInteractions(repository);
+        }
+
+        @Test
+        void delete () {
+            //Arrange
+            Book book = mock(Book.class);
+            when(repository.findById(id)).thenReturn(Optional.of(book));
+
+            //Act
+            service.delete(id);
+
+            //Assert
+            verify(repository).delete(book);
+        }
     }
-
-    @Test
-    void updateWhenArgumentNull() throws Exception {
-        // Act
-        assertThrows(NullPointerException.class,
-                     () -> service.update(id, null));
-
-        verifyNoInteractions(repository);
-    }
-
-    @Test
-    void updateWhenBookNameNull() throws Exception {
-        //Arrange
-        UpdateBookArgument argument = mock(UpdateBookArgument.class);
-        when(argument.getBookName()).thenReturn(null);
-
-        // Act
-        guardCheck(() -> service.update(id, argument),
-
-                   //Assert
-                   WSArgumentException.class,
-                   BookErrorInfo.BOOK_NAME_IS_MANDATORY);
-
-        verifyNoInteractions(repository);
-    }
-
-    @Test
-    void updateWhenFullNameBlank() throws Exception {
-        //Arrange
-        CreateBookArgument argument = mock(CreateBookArgument.class);
-        when(argument.getBookName()).thenReturn("    ");
-
-        // Act
-        guardCheck(() -> service.create(argument),
-
-                   //Assert
-                   WSArgumentException.class,
-                   BookErrorInfo.BOOK_NAME_IS_MANDATORY);
-
-        verifyNoInteractions(repository);
-    }
-
-    @Test
-    void deleteWhenIdNull() throws Exception {
-        // Act
-        assertThrows(NullPointerException.class,
-                     () -> service.delete(null));
-
-        //Assert
-        verifyNoInteractions(repository);
-    }
-
-    @Test
-    void delete() {
-        //Arrange
-        Book book = mock(Book.class);
-        when(repository.findById(id)).thenReturn(Optional.of(book));
-
-        //Act
-        service.delete(id);
-
-        //Assert
-        verify(repository).delete(book);
-    }
-}

@@ -2,7 +2,9 @@ package library.service.book;
 
 import com.whitesoft.util.Guard;
 import com.whitesoft.util.exceptions.WSNotFoundException;
+import library.errorInfo.AuthorErrorInfo;
 import library.errorInfo.BookErrorInfo;
+import library.model.author.Author;
 import library.model.book.Book;
 import library.repository.BookRepository;
 import library.service.book.argument.CreateBookArgument;
@@ -63,6 +65,8 @@ public class BookServiceImpl implements BookService {
 
     @Transactional(isolation = SERIALIZABLE)
     public void delete(@NonNull Long id) {
-        bookRepository.deleteById(id);
+        Guard.checkArgumentExists(id, BookErrorInfo.NOT_FOUND);
+        Book book = getExisting(id);
+        bookRepository.delete(book);
     }
 }

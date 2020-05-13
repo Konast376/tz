@@ -172,7 +172,7 @@ class AuthorServiceImplTest {
         guardCheck(() -> service.getExisting(id),
 
                    //Assert
-                   WSArgumentException.class,
+                   WSNotFoundException.class,
                    AuthorErrorInfo.NOT_FOUND);
 
         verifyNoInteractions(repository);
@@ -282,6 +282,24 @@ class AuthorServiceImplTest {
                      () -> service.delete(null));
 
                    //Assert
+        verifyNoInteractions(repository);
+    }
+
+    @Test
+    void deleteWhenNotExists() {
+        //Arrange
+        Author author = mock(Author.class);
+        when(repository.findById(any())).thenReturn(Optional.empty());
+
+        //Act
+        guardCheck(() -> service.getExisting(id),
+
+                   //Assert
+                   WSNotFoundException.class,
+                   AuthorErrorInfo.NOT_FOUND);
+
+        verify(repository).findById(id);
+        verify(repository).delete(author);
         verifyNoInteractions(repository);
     }
 

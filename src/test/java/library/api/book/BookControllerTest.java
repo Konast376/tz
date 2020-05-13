@@ -1,12 +1,14 @@
 package library.api.book;
 
 import com.whitesoft.api.dto.CollectionDTO;
+import library.action.CreateBookAction;
+import library.action.CreateBookActionArgument;
 import library.api.book.dto.BookDto;
 import library.api.book.dto.CreateBookDto;
 import library.api.book.dto.UpdateBookDto;
 import library.mapper.BookMapper;
 import library.model.book.Book;
-import library.service.book.BookServiceImpl;
+import library.service.book.BookService;
 import library.service.book.argument.CreateBookArgument;
 import library.service.book.argument.UpdateBookArgument;
 import org.assertj.core.api.Assertions;
@@ -35,7 +37,7 @@ public class BookControllerTest {
     BookMapper mapper;
 
     @Mock
-    BookServiceImpl service;
+    BookService service;
 
     private final long id = 1L;
 
@@ -43,20 +45,27 @@ public class BookControllerTest {
     void create() {
         //Arrange
         CreateBookDto createDto = mock(CreateBookDto.class);
-        CreateBookArgument argument = mock(CreateBookArgument.class);
-        when(mapper.toCreateArgument(createDto)).thenReturn(argument);
+        CreateBookActionArgument argument = mock(CreateBookActionArgument.class);
+        when(mapper.toCreateDto(createDto)).thenReturn(argument);
 
-        Book savedBook = mock(Book.class);
-        when(service.create(argument)).thenReturn(savedBook);
-
+        CreateBookAction action = mock(CreateBookAction.class);
+        Book book = mock(Book.class);
         BookDto dto = mock(BookDto.class);
-        when(mapper.toDto(savedBook)).thenReturn(dto);
+        when(action.execute(argument)).thenReturn(book);
+        when(mapper.toDto(book)).thenReturn(dto);
 
         //Act
         BookDto result = controller.create(createDto);
 
         //Assert
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isSameAs(dto);
+
+        verify(action).execute(argument);
+        verifyNoInteractions(action);
+
+        verify(mapper).toCreateDto(createDto);
+        verify(mapper).toDto(book);
+        verifyNoInteractions(mapper);
     }
 
     @Test

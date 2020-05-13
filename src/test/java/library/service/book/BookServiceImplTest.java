@@ -168,11 +168,12 @@ class BookServiceImplTest {
 
         verifyNoMoreInteractions(repository);
     }
+
     @Test
     void updateWhenArgumentNull() throws Exception {
         // Act
         assertThrows(NullPointerException.class,
-                     () -> service.update(id,null));
+                     () -> service.update(id, null));
 
         verifyNoInteractions(repository);
     }
@@ -210,11 +211,25 @@ class BookServiceImplTest {
     }
 
     @Test
+    void deleteWhenIdNull() throws Exception {
+        // Act
+        assertThrows(NullPointerException.class,
+                     () -> service.delete(null));
+
+        //Assert
+        verifyNoInteractions(repository);
+    }
+
+    @Test
     void delete() {
+        //Arrange
+        Book book = mock(Book.class);
+        when(repository.findById(id)).thenReturn(Optional.of(book));
+
         //Act
         service.delete(id);
 
         //Assert
-        verify(repository).deleteById(id);
+        verify(repository).delete(book);
     }
 }

@@ -1,13 +1,12 @@
 package library.api.author;
 
 import com.whitesoft.api.dto.CollectionDTO;
-import library.api.author.AuthorController;
 import library.api.author.dto.AuthorDto;
 import library.api.author.dto.CreateAuthorDto;
 import library.api.author.dto.UpdateAuthorDto;
 import library.mapper.AuthorMapper;
 import library.model.author.Author;
-import library.service.author.AuthorServiceImpl;
+import library.service.author.AuthorService;
 import library.service.author.argument.CreateAuthorArgument;
 import library.service.author.argument.UpdateAuthorArgument;
 import org.assertj.core.api.Assertions;
@@ -38,7 +37,7 @@ public class AuthorControllerTest {
     AuthorMapper mapper;
 
     @Mock
-    AuthorServiceImpl service;
+    AuthorService service;
 
     private final long id = 1L;
 
@@ -79,7 +78,7 @@ public class AuthorControllerTest {
         CollectionDTO<AuthorDto> result = controller.getAll(pageNo, pageSize, sortField, sortDirection);
 
         //assert
-        verify(service).getAll((PageRequest.of(pageNo, pageSize,sortDirection,sortField)));
+        verify(service).getAll((PageRequest.of(pageNo, pageSize, sortDirection, sortField)));
         Assertions.assertThat(result.getItems()).containsOnly(dto);
     }
 

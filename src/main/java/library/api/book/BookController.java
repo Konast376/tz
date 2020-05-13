@@ -4,6 +4,7 @@ import com.whitesoft.api.dto.CollectionDTO;
 import com.whitesoft.api.mappers.MapperUtils;
 import com.whitesoft.util.actions.Action;
 import io.swagger.annotations.ApiOperation;
+import library.action.CreateBookActionArgument;
 import library.api.book.dto.BookDto;
 import library.api.book.dto.CreateBookDto;
 import library.api.book.dto.UpdateBookDto;
@@ -28,7 +29,8 @@ public class BookController {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public BookDto create(@RequestBody CreateBookDto body) {
-        return bookMapper.toDto(createBookAction.execute(bookMapper.toCreateDto(body)));
+        CreateBookActionArgument argument = bookMapper.toCreateDto(body);
+        return bookMapper.toDto(createBookAction.execute(argument));
     }
 
     @ApiOperation("Получить пейджинированный список книг")

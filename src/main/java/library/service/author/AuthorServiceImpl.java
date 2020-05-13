@@ -52,7 +52,6 @@ public class AuthorServiceImpl implements AuthorService {
         Guard.checkArgumentExists(argument.getDateOfBirth(), AuthorErrorInfo.DATE_OF_BIRTH_IS_MANDATORY);
 
         Author author = getExisting(id);
-
         author.setFullName(argument.getFullName());
         author.setDateOfBirth(argument.getDateOfBirth());
         author.setNationality(argument.getNationality());

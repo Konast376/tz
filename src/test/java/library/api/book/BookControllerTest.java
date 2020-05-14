@@ -1,8 +1,10 @@
 package library.api.book;
 
 import com.whitesoft.api.dto.CollectionDTO;
+import com.whitesoft.util.actions.Action;
 import library.action.CreateBookAction;
 import library.action.CreateBookActionArgument;
+import library.action.UpdateBookActionArgument;
 import library.api.book.dto.BookDto;
 import library.api.book.dto.CreateBookDto;
 import library.api.book.dto.UpdateBookDto;
@@ -34,6 +36,12 @@ public class BookControllerTest {
     BookController controller;
 
     @Mock
+    Action<Book> createBookAction;
+
+    @Mock
+    Action<Book> updateBookAction;
+
+    @Mock
     BookMapper mapper;
 
     @Mock
@@ -48,10 +56,9 @@ public class BookControllerTest {
         CreateBookActionArgument argument = mock(CreateBookActionArgument.class);
         when(mapper.toCreateDto(createDto)).thenReturn(argument);
 
-        CreateBookAction action = mock(CreateBookAction.class);
         Book book = mock(Book.class);
         BookDto dto = mock(BookDto.class);
-        when(action.execute(argument)).thenReturn(book);
+        when(createBookAction.execute(argument)).thenReturn(book);
         when(mapper.toDto(book)).thenReturn(dto);
 
         //Act
@@ -60,12 +67,12 @@ public class BookControllerTest {
         //Assert
         assertThat(result).isSameAs(dto);
 
-        verify(action).execute(argument);
-        verifyNoInteractions(action);
+        verify(createBookAction).execute(argument);
+        verifyNoMoreInteractions(createBookAction);
 
         verify(mapper).toCreateDto(createDto);
         verify(mapper).toDto(book);
-        verifyNoInteractions(mapper);
+        verifyNoMoreInteractions(mapper);
     }
 
     @Test
@@ -108,21 +115,27 @@ public class BookControllerTest {
     @Test
     void update() {
         //Arrange
-        UpdateBookArgument argument = mock(UpdateBookArgument.class);
         UpdateBookDto updateDto = mock(UpdateBookDto.class);
-        when(mapper.toUpdateArgument(updateDto)).thenReturn(argument);
+        UpdateBookActionArgument argument = mock(UpdateBookActionArgument.class);
+        when(mapper.toUpdateDto(updateDto)).thenReturn(argument);
 
-        Book updatedDto = mock(Book.class);
-        when(service.update(id, argument)).thenReturn(updatedDto);
-
+        Book book = mock(Book.class);
         BookDto dto = mock(BookDto.class);
-        when(mapper.toDto(updatedDto)).thenReturn(dto);
+        when(updateBookAction.execute(argument)).thenReturn(book);
+        when(mapper.toDto(book)).thenReturn(dto);
 
         //Act
         BookDto result = controller.update(id, updateDto);
 
         //Assert
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isSameAs(dto);
+
+        verify(updateBookAction).execute(argument);
+        verifyNoMoreInteractions(updateBookAction);
+
+        verify(mapper).toUpdateDto(updateDto);
+        verify(mapper).toDto(book);
+        verifyNoMoreInteractions(mapper);
     }
 
     @Test

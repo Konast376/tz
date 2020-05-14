@@ -1,6 +1,7 @@
 package library.mapper;
 
 import library.action.CreateBookActionArgument;
+import library.action.UpdateBookActionArgument;
 import library.api.author.dto.AuthorDto;
 import library.api.author.dto.CreateAuthorDto;
 import library.api.author.dto.UpdateAuthorDto;
@@ -17,11 +18,9 @@ import org.mapstruct.Mapper;
 
 @Mapper
 public interface BookMapper {
-    CreateBookArgument toCreateArgument(CreateBookDto dto);
-
     BookDto toDto(Book book);
 
-    UpdateBookArgument toUpdateArgument(UpdateBookDto dto);
-
     CreateBookActionArgument toCreateDto(CreateBookDto dto);
+
+    UpdateBookActionArgument toUpdateDto(UpdateBookDto dto);
 }

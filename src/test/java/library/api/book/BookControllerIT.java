@@ -71,20 +71,22 @@ public class BookControllerIT {
                                                .bookName("bookName")
                                                .numberOfPages(120)
                                                .publicationYear(1970)
+                                               .authorId(1L)
                                                .build();
         //Act
         BookDto result = client.post()
-                               .uri("/books/create")
+                               .uri("/books/{id}/update", id)
                                .bodyValue(updateDto)
                                .exchange()
 
                                //Assert
                                .expectStatus()
-                               .isCreated()
+                               .isOk()
                                .expectBody(BookDto.class)
                                .returnResult()
                                .getResponseBody();
-        assertThat(result).isEqualTo(expectedDto);
+
+        assertThat(result).isEqualToComparingFieldByField(expectedDto);
     }
 
     @Test
@@ -98,7 +100,7 @@ public class BookControllerIT {
 
               // Assert
               .expectStatus().isNotFound()
-              .expectBody().json("{\"message\":\"Автор не найден\"}");
+              .expectBody().json("{\"message\":\"Книга не найдена\"}");
     }
 
     @Test
@@ -137,8 +139,8 @@ public class BookControllerIT {
                                               .isOk()
                                               .expectBody(new ParameterizedTypeReference<CollectionDTO<BookDto>>() {})
                                               .returnResult().getResponseBody();
-        Assertions.assertThat(result.getTotalCount()).isEqualTo(1);
-        assertThat(result.getItems().get(0)).isEqualTo(expectedDto);
+        Assertions.assertThat(result.getTotalCount()).isEqualTo(2);
+        assertThat(result.getItems().get(0)).isEqualToIgnoringGivenFields(expectedDto, "id");
     }
 
     @Test

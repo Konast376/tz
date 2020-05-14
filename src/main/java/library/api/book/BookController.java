@@ -24,13 +24,13 @@ public class BookController {
     private final BookService bookService;
     private final BookMapper bookMapper;
     private final Action<Book> createBookAction;
+    private final Action<Book> updateBookAction;
 
     @ApiOperation("Создать книгу")
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public BookDto create(@RequestBody CreateBookDto body) {
-        CreateBookActionArgument argument = bookMapper.toCreateDto(body);
-        return bookMapper.toDto(createBookAction.execute(argument));
+        return bookMapper.toDto(createBookAction.execute(bookMapper.toCreateDto(body)));
     }
 
     @ApiOperation("Получить пейджинированный список книг")
@@ -55,7 +55,7 @@ public class BookController {
     @PostMapping("/{id}/update")
     public BookDto update(@PathVariable Long id,
                           @RequestBody UpdateBookDto body) {
-        return bookMapper.toDto(bookService.update(id, bookMapper.toUpdateArgument(body)));
+        return bookMapper.toDto(updateBookAction.execute(bookMapper.toUpdateDto(body)));
     }
 
     @ApiOperation("Удалить книгу")

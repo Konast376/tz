@@ -4,7 +4,7 @@ import com.jupiter.tools.spring.test.postgres.annotation.meta.EnablePostgresInte
 import org.junit.jupiter.api.Test;
 
 @EnablePostgresIntegrationTest
-class TzApplicationIT {
+public class TzApplicationIT {
 
     @Test
     void contextLoads() {

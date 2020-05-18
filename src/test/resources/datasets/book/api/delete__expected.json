@@ -1,0 +1,16 @@
+{
+  "book": [
+    {
+      "id": 2,
+      "book_name": "bookName",
+      "number_of_pages": "120",
+      "publication_year": "1970"
+    },
+    {
+      "id": 3,
+      "book_name": "bookName",
+      "number_of_pages": "120",
+      "publication_year": "1970"
+    }
+  ]
+}

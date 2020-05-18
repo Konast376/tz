@@ -3,9 +3,7 @@ package library.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.jupiter.tools.spring.test.postgres.annotation.meta.EnablePostgresIntegrationTest;
-import library.controller.dto.AuthorDto;
-import library.controller.dto.BookDto;
-import library.repository.AuthorRepository;
+import library.api.book.dto.BookDto;
 import library.repository.BookRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Maxim Seredkin
@@ -37,18 +34,18 @@ class BookControllerIT {
     @ExpectedDataSet("/datasets/book/api/create__expected.json")
     void create() throws Exception {
         // Arrange
-        BookDto authorDto = BookDto.builder()
+        BookDto bookDto = BookDto.builder()
                                    .id(1L)
                                    .bookName("book name")
                                    .numberOfPages(1)
-                                   .publicationYear(new Date(0))
-                                   .authorId(1L)
+                                   .publicationYear(1970)
+                           //        .authorId(1L)
                                    .build();
 
         // Act
         client.post()
               .uri("/api/book/create")
-              .bodyValue(authorDto)
+              .bodyValue(bookDto)
               .exchange()
 
               // Assert
